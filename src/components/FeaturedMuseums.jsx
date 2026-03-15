@@ -1,6 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight } from 'lucide-react';
+import museumNasionalImage from '../assets/museumNasional.jpg';
+import museumAngkutImage from '../assets/museumAngkut.jpg';
+import museumTsunamiImage from '../assets/museumTsunami.jpg';
+import museumUllenSentaluImage from '../assets/museumUllen-Sentalu.jpg';
 
 const FeaturedMuseums = () => {
   const featured = [
@@ -8,25 +12,29 @@ const FeaturedMuseums = () => {
       name: "National Museum of Indonesia",
       location: "Jakarta Pusat",
       description: "Affectionately known as the Elephant Building, housing over 140,000 prehistoric and historical artifacts.",
-      image: "https://images.unsplash.com/photo-1544480646-60840b2a7585?q=80&w=800&auto=format&fit=crop"
+      image: museumNasionalImage,
+      link: "https://www.museumnasional.or.id/"
     },
     {
       name: "Museum Angkut",
       location: "Kota Batu, Jawa Timur",
       description: "Southeast Asia's first modern transportation museum, featuring classic cars and thematic zones.",
-      image: "https://images.unsplash.com/photo-1533513364-e1d88a18df7b?q=80&w=800&auto=format&fit=crop"
+      image: museumAngkutImage,
+      link: "https://jtp.id/museumangkut/"
     },
     {
       name: "Aceh Tsunami Museum",
       location: "Banda Aceh",
       description: "A poignant architectural masterwork commemorating the 2004 tsunami disaster and honoring its victims.",
-      image: "https://images.unsplash.com/photo-1551065935-7c010c7a50ba?q=80&w=800&auto=format&fit=crop"
+      image: museumTsunamiImage,
+      link: "https://museumtsunami.acehprov.go.id/"
     },
     {
       name: "Ullen Sentalu Museum",
       location: "Yogyakarta",
       description: "An intimate glimpse into the art and culture of the Mataram dynasty within a beautiful forest setting.",
-      image: "https://images.unsplash.com/photo-1563214532-6807ebda9a9b?q=80&w=800&auto=format&fit=crop"
+      image: museumUllenSentaluImage,
+      link: "https://www.ullensentalu.com/"
     }
   ];
 
@@ -83,10 +91,22 @@ const FeaturedMuseums = () => {
                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
                   {museum.description}
                 </p>
-                <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 transition-colors">
-                  Learn more
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
+                {museum.link ? (
+                  <a
+                    href={museum.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 transition-colors"
+                  >
+                    Learn more
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                ) : (
+                  <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 transition-colors">
+                    Learn more
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}

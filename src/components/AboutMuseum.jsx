@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { History, BookOpen, Globe, Shapes } from 'lucide-react';
+import museumPasifikaImage from '../assets/museumPasifika.jpg';
 
 const AboutMuseum = () => {
   const features = [
@@ -84,8 +85,14 @@ const AboutMuseum = () => {
               transition={{ duration: 0.8 }}
               className="relative rounded-3xl overflow-hidden glass-panel border border-white/50 dark:border-slate-700/50 shadow-2xl aspect-[4/3] bg-slate-200 dark:bg-slate-800"
             >
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-80 dark:opacity-40"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+              <img
+                src={museumPasifikaImage}
+                alt="Museum Pasifika"
+                className="absolute inset-0 w-full h-full object-cover object-center [filter:brightness(0.95)_contrast(0.95)_saturate(0.9)_blur(0.2px)] dark:[filter:brightness(0.82)_contrast(0.92)_saturate(0.86)_blur(0.3px)]"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/82 via-slate-900/24 to-slate-900/8 dark:from-slate-950/86 dark:via-slate-950/34 dark:to-slate-950/14"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/12 via-transparent to-indigo-950/18 dark:from-emerald-950/16 dark:to-indigo-950/26"></div>
               
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <div className="glass-panel rounded-2xl p-6 bg-white/10 dark:bg-black/30 backdrop-blur-md">

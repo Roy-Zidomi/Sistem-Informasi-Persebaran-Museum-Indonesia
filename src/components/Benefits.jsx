@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, GraduationCap, Map, Microscope, Fingerprint } from 'lucide-react';
+import museumAsiaAfrikaImage from '../assets/museumAsia-Afrikajpeg.jpeg';
 
 const Benefits = () => {
   const benefitsList = [
@@ -100,8 +101,14 @@ const Benefits = () => {
             <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 dark:from-indigo-500/10 dark:to-purple-500/10 rounded-full blur-[100px]"></div>
             
             <div className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden glass-panel border border-white/40 dark:border-slate-700/50 shadow-2xl bg-slate-100 dark:bg-slate-800 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1577083656754-52d3c94fd0eb?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-60 dark:opacity-40 group-hover:scale-105 transition-transform duration-700"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/20 to-slate-900/90"></div>
+              <img
+                src={museumAsiaAfrikaImage}
+                alt="Museum Asia Afrika"
+                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 [filter:brightness(1.06)_contrast(1.08)_saturate(1.05)] dark:[filter:brightness(0.92)_contrast(1.12)_saturate(1.08)]"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-900/8 via-slate-900/22 to-slate-900/82 dark:from-slate-950/12 dark:via-slate-950/32 dark:to-slate-950/85"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-950/10 via-transparent to-transparent dark:from-indigo-950/20"></div>
               
               <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <div className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-500/30">

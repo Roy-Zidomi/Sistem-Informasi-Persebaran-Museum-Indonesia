@@ -25,10 +25,14 @@ const Facts = () => {
   ];
 
   return (
-    <section className="py-24 relative overflow-hidden bg-emerald-900 border-y border-emerald-800">
+    <section className="py-24 relative overflow-hidden bg-slate-100 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800">
       {/* Decorative background pattern */}
-      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/50 block"></div>
+      <div
+        className="absolute inset-0 opacity-[0.08] dark:opacity-[0.14]"
+        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }}
+      ></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-200/45 via-cyan-100/30 to-transparent dark:from-indigo-500/18 dark:via-cyan-500/10 dark:to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-200/35 via-transparent to-transparent dark:from-slate-900/70 dark:via-transparent dark:to-transparent"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 max-w-2xl mx-auto">
@@ -36,7 +40,7 @@ const Facts = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight"
+            className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight"
           >
             Did You Know?
           </motion.h2>
@@ -45,7 +49,7 @@ const Facts = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-emerald-100 text-lg"
+            className="text-slate-600 dark:text-slate-300 text-lg"
           >
             Museums hold incredible stories and facts that shape our understanding of the world. Here are just a few glimpses into Indonesia's museum landscape.
           </motion.p>
@@ -59,14 +63,14 @@ const Facts = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: idx * 0.2 }}
-              className="glass-panel bg-white/10 dark:bg-black/20 border-white/10 text-center p-8 rounded-3xl hover:bg-white/15 transition-colors"
+              className="glass-panel bg-white/70 dark:bg-slate-900/55 border-slate-200/60 dark:border-slate-700/60 text-center p-8 rounded-3xl hover:bg-white/80 dark:hover:bg-slate-900/65 transition-colors shadow-lg shadow-slate-300/25 dark:shadow-none"
             >
-              <div className="w-16 h-16 mx-auto bg-emerald-800/50 rounded-2xl flex items-center justify-center text-emerald-300 mb-6 shadow-inner">
+              <div className="w-16 h-16 mx-auto bg-indigo-100 dark:bg-indigo-900/45 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-300 mb-6 shadow-inner">
                 {stat.icon}
               </div>
-              <h3 className="text-4xl font-extrabold text-white mb-2">{stat.value}</h3>
-              <p className="text-lg font-semibold text-emerald-300 mb-4">{stat.label}</p>
-              <p className="text-emerald-100/80 text-sm leading-relaxed">
+              <h3 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">{stat.value}</h3>
+              <p className="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">{stat.label}</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                 {stat.description}
               </p>
             </motion.div>

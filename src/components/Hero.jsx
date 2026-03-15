@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Compass, ArrowRight, Landmark } from 'lucide-react';
-import nationalMuseumImg from '../assets/museumNasional.jpg';
+import { MapPin, ArrowRight } from 'lucide-react';
+import nationalMuseumImg from '../assets/museumAgungRai.jpg';
 
 
 const Hero = () => {
@@ -62,60 +62,22 @@ const Hero = () => {
         >
           {/* Abstract map or card composition */}
           <div className="relative w-full aspect-square max-w-md mx-auto">
-            {/* Main large card */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-indigo-500/20 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-3xl backdrop-blur-3xl border border-white/40 dark:border-white/10 shadow-2xl overflow-hidden glass-panel rotate-3 transform transition-transform hover:rotate-0 duration-500">
-              <div className="p-6 h-full flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                  <div className="bg-white/90 dark:bg-slate-900/90 p-3 rounded-2xl shadow-sm">
-                    <Compass className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
-                  </div>
-                  <span className="px-3 py-1 bg-white/50 dark:bg-slate-800/50 rounded-full text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Featured
-                  </span>
-                </div>
-                <div className="mt-8">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">National Museum</h3>
-                  <p className="text-slate-600 dark:text-slate-400 flex items-center gap-1 text-sm">
-                    <MapPin className="w-4 h-4" /> Jakarta Pusat, DKI Jakarta
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating decorative card 1 */}
+            <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-emerald-200/40 via-cyan-200/30 to-indigo-200/35 blur-3xl dark:from-emerald-500/15 dark:via-cyan-500/10 dark:to-indigo-500/15" />
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute -left-12 top-1/4 p-4 rounded-2xl glass-panel hidden sm:block w-48 shadow-xl"
+              initial={{ rotate: 2, y: 0, scale: 1 }}
+              whileHover={{ rotate: 0, y: -10, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+              className="absolute inset-0 rounded-3xl overflow-hidden border border-white/30 dark:border-slate-700/60 shadow-2xl cursor-pointer"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                  <Landmark className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">400+</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Museums Mapped</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Floating decorative card 2 */}
-            <motion.div
-              animate={{ y: [0, 15, 0] }}
-              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-              className="absolute -right-8 bottom-1/4 p-4 rounded-2xl glass-panel hidden sm:block w-56 shadow-xl"
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0 mt-1">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Discover Nearest</p>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 w-2/3 h-full rounded-full"></div>
-                  </div>
-                </div>
-              </div>
+              <motion.img
+                src={nationalMuseumImg}
+                alt="National Museum"
+                className="w-full h-full object-cover object-center [filter:brightness(0.96)_contrast(0.94)_saturate(0.9)_blur(0.2px)] dark:[filter:brightness(0.8)_contrast(0.92)_saturate(0.86)_blur(0.3px)]"
+                whileHover={{ scale: 1.06 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/12 via-slate-900/18 to-indigo-900/35 dark:from-slate-950/20 dark:via-slate-950/32 dark:to-indigo-950/45" />
+              <div className="absolute inset-0 ring-1 ring-white/20 dark:ring-slate-700/50 rounded-3xl" />
             </motion.div>
           </div>
         </motion.div>
