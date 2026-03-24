@@ -1,14 +1,14 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import AboutMuseum from './components/AboutMuseum';
-import TypesMuseum from './components/TypesMuseum';
-import Benefits from './components/Benefits';
-import FeaturedMuseums from './components/FeaturedMuseums';
-import Facts from './components/Facts';
-import AboutPlatform from './components/AboutPlatform';
-import FAQ from './components/FAQ';
-import Footer from './components/Footer';
+import React from "react";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import AboutMuseum from "./components/AboutMuseum";
+import TypesMuseum from "./components/TypesMuseum";
+import Benefits from "./components/Benefits";
+import FeaturedMuseums from "./components/FeaturedMuseums";
+import Facts from "./components/Facts";
+import AboutPlatform from "./components/AboutPlatform";
+import FAQ from "./components/FAQ";
+import Footer from "./components/Footer";
 
 function App() {
   return (

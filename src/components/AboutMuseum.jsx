@@ -31,7 +31,7 @@ const AboutMuseum = () => {
     <section id="what-is-museum" className="py-24 bg-white dark:bg-slate-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Left Text Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -44,11 +44,11 @@ const AboutMuseum = () => {
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               The Foundation
             </div>
-            
+
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
               What is a <span className="text-emerald-600 dark:text-emerald-400">Museum</span>?
             </h2>
-            
+
             <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
               A museum goes beyond simply being a building filled with ancient objects. It is a living, breathing institution that preserves our collective memory, safeguards our cultural heritage, and inspires future generations through human discovery.
             </p>
@@ -76,7 +76,7 @@ const AboutMuseum = () => {
           <div className="relative">
             {/* Background decorative blob */}
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-indigo-400/20 dark:from-emerald-500/10 dark:to-indigo-500/10 rounded-full blur-3xl transform -rotate-6 scale-110"></div>
-            
+
             {/* Image/Illustration container */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
@@ -93,7 +93,7 @@ const AboutMuseum = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/82 via-slate-900/24 to-slate-900/8 dark:from-slate-950/86 dark:via-slate-950/34 dark:to-slate-950/14"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/12 via-transparent to-indigo-950/18 dark:from-emerald-950/16 dark:to-indigo-950/26"></div>
-              
+
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <div className="glass-panel rounded-2xl p-6 bg-white/10 dark:bg-black/30 backdrop-blur-md">
                   <p className="text-white font-medium text-lg italic">
