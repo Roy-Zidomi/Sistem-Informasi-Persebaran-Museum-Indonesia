@@ -5,15 +5,22 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon --watch src --watch .env src/server.js"
   },
-  "keywords": ["museum", "gis", "indonesia", "api"],
+  "keywords": [
+    "museum",
+    "gis",
+    "indonesia",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.13.1"
   },
   "devDependencies": {

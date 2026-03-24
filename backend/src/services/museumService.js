@@ -157,7 +157,7 @@ const getNearbyMuseums = async (lat, lng, radius, limit = 20) => {
     LEFT JOIN kabupaten k ON m.kabupaten_id = k.id
     LEFT JOIN kategori kt ON m.kategori_id = kt.id
     WHERE m.latitude IS NOT NULL AND m.longitude IS NOT NULL
-    HAVING (
+    AND (
       6371 * acos(
         LEAST(1.0,
           cos(radians($1)) * cos(radians(m.latitude)) *

@@ -1,31 +1,31 @@
-import React from "react";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import AboutMuseum from "./components/AboutMuseum";
-import TypesMuseum from "./components/TypesMuseum";
-import Benefits from "./components/Benefits";
-import FeaturedMuseums from "./components/FeaturedMuseums";
-import Facts from "./components/Facts";
-import AboutPlatform from "./components/AboutPlatform";
-import FAQ from "./components/FAQ";
-import Footer from "./components/Footer";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import MapPage from './pages/MapPage';
+import MuseumDetailPage from './pages/MuseumDetailPage';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans transition-colors duration-300 selection:bg-emerald-500/30">
-      <Navbar />
-      <main>
-        <Hero />
-        <AboutMuseum />
-        <TypesMuseum />
-        <Benefits />
-        <FeaturedMuseums />
-        <Facts />
-        <AboutPlatform />
-        <FAQ />
-      </main>
-      <Footer />
-    </div>
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/map" element={<MapPage />} />
+      <Route path="/museum/:id" element={<MuseumDetailPage />} />
+
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<LoginPage />} />
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

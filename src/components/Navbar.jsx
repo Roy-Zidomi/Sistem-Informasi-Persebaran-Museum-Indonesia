@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { Moon, Sun, Menu, X, Landmark } from 'lucide-react';
+import { Moon, Sun, Menu, X, Landmark, Map } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,21 +42,21 @@ const Navbar = () => {
         <div className={`px-4 sm:px-6 lg:px-8 transition-all duration-500 ${isScrolled ? 'py-3' : 'py-5'}`}>
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center gap-2 cursor-pointer">
+            <Link to="/" className="flex items-center gap-2 cursor-pointer">
               <div className="bg-emerald-100 dark:bg-emerald-900/50 p-2 rounded-xl text-emerald-600 dark:text-emerald-400">
                 <Landmark size={24} />
               </div>
               <span className="font-bold text-xl tracking-tight hidden sm:block">
                 Museum<span className="text-emerald-600 dark:text-emerald-400">Nesia</span>
               </span>
-            </div>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-1 lg:space-x-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
-                  href={link.href}
+                  href={isLandingPage ? link.href : `/${link.href}`}
                   className="text-sm font-medium text-slate-600 hover:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-400 px-3 py-2 rounded-lg transition-colors"
                 >
                   {link.name}
@@ -70,9 +73,13 @@ const Navbar = () => {
               >
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <button className="hidden sm:flex px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white text-sm font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5">
-                Explore
-              </button>
+              <Link
+                to="/map"
+                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white text-sm font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5"
+              >
+                <Map size={16} />
+                Explore Map
+              </Link>
 
               {/* Mobile Menu Button */}
               <button
@@ -98,7 +105,7 @@ const Navbar = () => {
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
-                    href={link.href}
+                    href={isLandingPage ? link.href : `/${link.href}`}
                     className="px-4 py-3 text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -106,9 +113,14 @@ const Navbar = () => {
                   </a>
                 ))}
                 <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
-                  <button className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-500 text-white font-medium shadow-md">
-                    Explore
-                  </button>
+                  <Link
+                    to="/map"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-500 text-white font-medium shadow-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Map size={16} />
+                    Explore Map
+                  </Link>
                 </div>
               </div>
             </motion.div>

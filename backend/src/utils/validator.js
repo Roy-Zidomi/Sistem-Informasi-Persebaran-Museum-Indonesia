@@ -13,8 +13,8 @@ const validatePagination = (query) => {
     return { error: 'Parameter "page" harus berupa angka positif' };
   }
 
-  if (isNaN(limit) || limit < 1 || limit > 100) {
-    return { error: 'Parameter "limit" harus berupa angka antara 1 - 100' };
+  if (isNaN(limit) || limit < 1) {
+    return { error: 'Parameter "limit" harus berupa angka positif minimal 1' };
   }
 
   const offset = (page - 1) * limit;

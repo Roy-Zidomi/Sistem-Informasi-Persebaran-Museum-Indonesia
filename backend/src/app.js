@@ -12,7 +12,7 @@ const app = express();
 // Enable CORS untuk semua origin (bisa dikonfigurasi lebih ketat untuk production)
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
-  methods: ['GET'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
