@@ -5,49 +5,49 @@ import { Landmark, Palette, Users, Atom, Sword, Globe2 } from 'lucide-react';
 const TypesMuseum = () => {
   const categories = [
     {
-      icon: <Landmark className="w-8 h-8" />,
-      title: "History Museum",
-      description: "Explore the chronicles of the past, from ancient kingdoms to modern independence movements.",
-      color: "from-amber-400 to-orange-500",
-      bgLight: "bg-amber-50",
-      bgDark: "dark:bg-amber-950/30"
-    },
-    {
       icon: <Palette className="w-8 h-8" />,
-      title: "Art Museum",
-      description: "Immerse yourself in paintings, sculptures, and contemporary artworks by master creators.",
+      title: "Art & Culture",
+      description: "Enjoy artistic works, traditions, and cultural expressions that reflect the richness of the archipelago.",
       color: "from-pink-500 to-rose-500",
       bgLight: "bg-pink-50",
       bgDark: "dark:bg-pink-950/30"
     },
     {
-      icon: <Globe2 className="w-8 h-8" />,
-      title: "Cultural Museum",
-      description: "Discover the rich tapestry of traditions, customs, and ways of life across regions.",
-      color: "from-emerald-400 to-teal-500",
-      bgLight: "bg-emerald-50",
-      bgDark: "dark:bg-emerald-950/30"
+      icon: <Landmark className="w-8 h-8" />,
+      title: "History",
+      description: "Explore the traces of the past, from ancient kingdoms to Indonesia's road to independence.",
+      color: "from-amber-400 to-orange-500",
+      bgLight: "bg-amber-50",
+      bgDark: "dark:bg-amber-950/30"
     },
     {
       icon: <Atom className="w-8 h-8" />,
-      title: "Science Museum",
-      description: "Unravel the mysteries of physics, biology, and technological advancements interactively.",
+      title: "Science & Technology",
+      description: "Learn about scientific innovation and technological progress through educational interactive collections.",
       color: "from-blue-400 to-indigo-500",
       bgLight: "bg-blue-50",
       bgDark: "dark:bg-blue-950/30"
     },
     {
+      icon: <Globe2 className="w-8 h-8" />,
+      title: "Nature",
+      description: "Discover rich flora, fauna, geology, and environmental wonders from across Indonesia.",
+      color: "from-emerald-400 to-teal-500",
+      bgLight: "bg-emerald-50",
+      bgDark: "dark:bg-emerald-950/30"
+    },
+    {
       icon: <Sword className="w-8 h-8" />,
-      title: "Military Museum",
-      description: "Honor the sacrifices and strategies of the armed forces through historical artifacts and weaponry.",
+      title: "Military",
+      description: "Understand the history of defense and struggle through military artifacts, strategy, and heroic stories.",
       color: "from-slate-500 to-slate-700",
       bgLight: "bg-slate-100",
       bgDark: "dark:bg-slate-800/50"
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Ethnography Museum",
-      description: "Study the deep social dynamics, tribal histories, and indigenous cultures of the archipelago.",
+      title: "Special",
+      description: "Explore unique themes such as transportation, music, sports, or other curated thematic collections.",
       color: "from-purple-400 to-fuchsia-500",
       bgLight: "bg-purple-50",
       bgDark: "dark:bg-purple-950/30"

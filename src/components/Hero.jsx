@@ -1,10 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import nationalMuseumImg from '../assets/museumAgungRai.jpg';
 
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleStartExplore = () => {
+    navigate('/map');
+  };
+
+  const handleFindNearMe = () => {
+    navigate('/map?nearby=1');
+  };
+
   return (
     <section
       id="home"
@@ -42,11 +53,19 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4"
           >
-            <button className="px-8 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold hover:-translate-y-1 transition-transform shadow-xl shadow-slate-900/20 dark:shadow-white/10 flex items-center justify-center gap-2 group">
+            <button
+              type="button"
+              onClick={handleStartExplore}
+              className="px-8 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold hover:-translate-y-1 transition-transform shadow-xl shadow-slate-900/20 dark:shadow-white/10 flex items-center justify-center gap-2 group"
+            >
               Start Exploring
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="px-8 py-4 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={handleFindNearMe}
+              className="px-8 py-4 rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+            >
               <MapPin className="w-5 h-5 text-emerald-500" />
               Find Near Me
             </button>

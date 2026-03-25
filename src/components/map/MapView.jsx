@@ -8,7 +8,7 @@ import { MapPin, Tag, Building2, Globe, Navigation } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const MapView = ({ museums = [], userLocation = null, nearbyRadius = null }) => {
+const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sidebarOpen = true }) => {
   // Memoize markers to avoid re-creating icons on every render
   const markers = useMemo(() => {
     return museums
@@ -35,7 +35,7 @@ const MapView = ({ museums = [], userLocation = null, nearbyRadius = null }) => 
       />
 
       {/* Auto-zoom controller */}
-      <MapController museums={museums} userLocation={userLocation} />
+      <MapController museums={museums} userLocation={userLocation} sidebarOpen={sidebarOpen} />
 
       {/* Museum markers with clustering */}
       <MarkerClusterGroup

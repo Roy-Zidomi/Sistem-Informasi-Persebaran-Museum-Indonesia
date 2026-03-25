@@ -10,6 +10,8 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
+  const MotionDiv = motion.div;
+  const MotionAside = motion.aside;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +20,21 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileMenuOpen]);
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -30,7 +47,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 px-2 sm:px-3 lg:px-4">
-      <motion.div
+      <MotionDiv
         initial={false}
         animate={{ y: isScrolled ? 10 : 0 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
@@ -68,14 +85,14 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
+                className="hidden md:flex p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
               <Link
                 to="/map"
-                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white text-sm font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5"
+                className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white text-sm font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5"
               >
                 <Map size={16} />
                 Explore Map
@@ -95,24 +112,53 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden absolute top-[calc(100%+0.5rem)] left-0 right-0 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden"
+            <MotionDiv
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="md:hidden fixed inset-0 z-[70] bg-slate-950/45 backdrop-blur-sm"
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              <div className="px-4 py-4 space-y-2 flex flex-col">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={isLandingPage ? link.href : `/${link.href}`}
-                    className="px-4 py-3 text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
+              <MotionAside
+                initial={{ x: -320 }}
+                animate={{ x: 0 }}
+                exit={{ x: -340 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+                className="h-full w-[84%] max-w-xs bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-base font-semibold text-slate-800 dark:text-white">Menu</span>
+                  <button
                     onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 rounded-lg text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    aria-label="Close menu"
                   >
-                    {link.name}
-                  </a>
-                ))}
-                <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="px-4 py-4 space-y-2 flex-1 overflow-y-auto">
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={isLandingPage ? link.href : `/${link.href}`}
+                      className="block px-4 py-3 text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                </div>
+
+                <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                  <button
+                    onClick={toggleTheme}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium transition-colors"
+                  >
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                  </button>
                   <Link
                     to="/map"
                     className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-500 text-white font-medium shadow-md"
@@ -122,11 +168,11 @@ const Navbar = () => {
                     Explore Map
                   </Link>
                 </div>
-              </div>
-            </motion.div>
+              </MotionAside>
+            </MotionDiv>
           )}
         </AnimatePresence>
-      </motion.div>
+      </MotionDiv>
     </nav>
   );
 };

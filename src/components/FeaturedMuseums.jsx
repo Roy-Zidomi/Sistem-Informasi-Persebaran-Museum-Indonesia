@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { MapPin, ArrowRight } from 'lucide-react';
 import museumNasionalImage from '../assets/museumNasional.jpg';
 import museumAngkutImage from '../assets/museumAngkut.jpg';
@@ -51,10 +52,13 @@ const FeaturedMuseums = () => {
               A curated selection of the most iconic and frequently visited cultural landmarks across the nation.
             </p>
           </div>
-          <button className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium hover:scale-105 transition-transform shadow-sm">
+          <Link
+            to="/map"
+            className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium hover:scale-105 transition-transform shadow-sm"
+          >
             View Map
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -112,10 +116,13 @@ const FeaturedMuseums = () => {
           ))}
         </div>
 
-        <button className="mt-12 w-full md:hidden flex justify-center items-center gap-2 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium shadow-sm">
+        <Link
+          to="/map"
+          className="mt-12 w-full md:hidden flex justify-center items-center gap-2 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium shadow-sm"
+        >
           View Map
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </Link>
 
       </div>
     </section>

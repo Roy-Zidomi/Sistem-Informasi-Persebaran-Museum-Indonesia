@@ -6,8 +6,25 @@ import L from 'leaflet';
  * Controller component untuk auto-zoom peta ke bounds semua marker.
  * Menggunakan useMap() hook dari react-leaflet.
  */
-const MapController = ({ museums, userLocation }) => {
+const MapController = ({ museums, userLocation, sidebarOpen }) => {
   const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    const frameId = window.requestAnimationFrame(() => {
+      map.invalidateSize();
+    });
+
+    const timeoutId = window.setTimeout(() => {
+      map.invalidateSize();
+    }, 320);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [map, sidebarOpen]);
 
   useEffect(() => {
     if (!map) return;

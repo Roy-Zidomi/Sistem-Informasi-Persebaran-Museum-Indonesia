@@ -1,4 +1,5 @@
 const { query } = require('../config/db');
+const { randomUUID } = require('crypto');
 
 /**
  * Helper: bangun WHERE clause dari filter global
@@ -184,13 +185,16 @@ const getMuseumsAdmin = async ({ page = 1, limit = 10, offset = 0, search, provi
 /**
  * Tambah museum baru
  */
-const createMuseum = async ({ nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id }) => {
+const createMuseum = async ({ source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id }) => {
+  const normalizedSourceId = typeof source_id === 'string' ? source_id.trim() : '';
+  const finalSourceId = normalizedSourceId || `admin/${randomUUID()}`;
+
   const sql = `
-    INSERT INTO museum (nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO museum (source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *
   `;
-  const params = [nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id || null];
+  const params = [finalSourceId, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id || null];
   const result = await query(sql, params);
   return result.rows[0];
 };

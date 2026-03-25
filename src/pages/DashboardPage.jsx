@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { getProvinces, getRegencies, getCategories } from '../api/museumApi';
 import {
   getDashboardStats, getMuseumsByProvince, getMuseumsByCategory,
@@ -13,11 +12,10 @@ import ChartCategory from '../components/admin/ChartCategory';
 import ChartTopRegency from '../components/admin/ChartTopRegency';
 import MuseumTable from '../components/admin/MuseumTable';
 import MuseumForm from '../components/admin/MuseumForm';
-import { Menu, Moon, Sun } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 const DashboardPage = () => {
   const { admin } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   // UI State
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -60,6 +58,17 @@ const DashboardPage = () => {
       } catch (e) { console.error(e); }
     };
     load();
+  }, []);
+
+  // Jika kembali ke layar desktop, pastikan sidebar kembali ke mode desktop normal
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Load regencies when province changes
@@ -165,6 +174,14 @@ const DashboardPage = () => {
     setActiveMenu('edit');
   };
 
+  const handleSidebarMenuChange = (menuKey) => {
+    setActiveMenu(menuKey);
+    setEditMuseum(null);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
+
   // Render content based on active menu
   const renderContent = () => {
     switch (activeMenu) {
@@ -208,15 +225,21 @@ const DashboardPage = () => {
   };
 
   const menuTitles = { dashboard: 'Dashboard', museums: 'Kelola Museum', add: 'Tambah Museum', edit: 'Edit Museum' };
+  const menuDescriptions = {
+    dashboard: 'Ringkasan performa platform museum.',
+    museums: 'Kelola, cari, dan perbarui data museum dengan cepat.',
+    add: 'Tambahkan data museum baru ke dalam sistem.',
+    edit: 'Perbarui informasi museum yang sudah terdaftar.',
+  };
 
   return (
     <div className="h-screen w-screen flex bg-slate-100 dark:bg-slate-950 overflow-hidden">
       {/* Sidebar */}
-      <div className={`fixed lg:relative z-30 h-full transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0 -translate-x-full lg:-translate-x-full'}`}>
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 transform transition-transform duration-300 lg:static lg:translate-x-0 lg:shrink-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full w-64">
           <SidebarMenu
             activeMenu={activeMenu === 'edit' ? 'museums' : activeMenu}
-            onMenuChange={(m) => { setActiveMenu(m); setEditMuseum(null); }}
+            onMenuChange={handleSidebarMenuChange}
             provinces={provinces}
             regencies={regencies}
             categories={categories}
@@ -234,31 +257,31 @@ const DashboardPage = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <header className="flex items-center justify-between h-[4.5rem] px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              type="button"
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle sidebar menu"
             >
-              <Menu size={20} />
+              <Menu size={18} />
             </button>
-            <div>
-              <h1 className="text-lg font-bold text-slate-800 dark:text-white">{menuTitles[activeMenu]}</h1>
-              <p className="text-xs text-slate-400">Selamat datang, {admin?.email || 'Admin'}</p>
-            </div>
+            <span className="text-xs font-semibold tracking-[0.24em] text-slate-500 dark:text-slate-400 uppercase">Admin Panel</span>
           </div>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+          <div />
         </header>
 
         {/* Content Area */}
         <main className="flex-1 overflow-y-auto p-6">
+          <section className="mb-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-r from-emerald-500/10 via-transparent to-transparent bg-white/80 dark:bg-slate-900 px-6 py-5">
+            <h1 className="text-3xl font-extrabold text-slate-800 dark:text-white">{menuTitles[activeMenu]}</h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              {menuDescriptions[activeMenu]} Selamat datang, {admin?.email || 'Admin'}.
+            </p>
+          </section>
           {renderContent()}
         </main>
       </div>

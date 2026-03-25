@@ -32,19 +32,19 @@ const ChartTopRegency = ({ data = [], loading = false }) => {
                 borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
               }}
               labelStyle={{ color: '#f8fafc', fontWeight: 'bold', fontSize: 12 }}
-              itemStyle={{ color: '#8b5cf6', fontSize: 12 }}
+              itemStyle={{ color: '#cbd5e1', fontSize: 12 }}
               formatter={(value) => [`${value} museum`, 'Jumlah']}
             />
             <Bar
               dataKey="value"
-              fill="url(#regencyGradient)"
+              fill="url(#regencyMutedGradient)"
               radius={[0, 6, 6, 0]}
               barSize={18}
             />
             <defs>
-              <linearGradient id="regencyGradient" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#6366F1" />
+              <linearGradient id="regencyMutedGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#38BDF8" />
+                <stop offset="100%" stopColor="#818CF8" />
               </linearGradient>
             </defs>
           </BarChart>

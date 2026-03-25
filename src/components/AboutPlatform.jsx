@@ -60,13 +60,6 @@ const AboutPlatform = () => {
               ))}
             </div>
             
-            <div className="mt-10 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 flex items-center gap-3">
-              <span className="flex h-3 w-3 relative shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-              </span>
-              <p className="font-medium text-sm">Full mapping features are currently in active development. Coming soon!</p>
-            </div>
           </motion.div>
 
           {/* Abstract mockup representation */}

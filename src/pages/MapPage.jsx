@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { getMuseums, getNearbyMuseums, getProvinces, getRegencies, getCategories } from '../api/museumApi';
 import MapView from '../components/map/MapView';
 import FilterPanel from '../components/map/FilterPanel';
 import LoadingOverlay from '../components/map/LoadingOverlay';
-import { Link } from 'react-router-dom';
-import { Landmark, Moon, Sun, ArrowLeft, Menu, X } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Landmark, Moon, Sun, ArrowLeft, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MapPage = () => {
   const { theme, toggleTheme } = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const hasAutoTriggeredNearby = useRef(false);
 
   // Data state
   const [museums, setMuseums] = useState([]);
@@ -142,6 +144,20 @@ const MapPage = () => {
     fetchMuseums();
   }, [fetchMuseums]);
 
+  useEffect(() => {
+    const shouldRequestNearby = searchParams.get('nearby') === '1';
+    if (!shouldRequestNearby || hasAutoTriggeredNearby.current) {
+      return;
+    }
+
+    hasAutoTriggeredNearby.current = true;
+    handleNearby();
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('nearby');
+    setSearchParams(nextParams, { replace: true });
+  }, [handleNearby, searchParams, setSearchParams]);
+
   // Handle filter changes
   const handleProvinceChange = (value) => {
     setSelectedProvince(value);
@@ -199,19 +215,9 @@ const MapPage = () => {
             </span>
           </Link>
 
-          <div className="hidden sm:block h-6 w-px bg-slate-300 dark:bg-slate-700 mx-2" />
-          <span className="hidden sm:block text-sm font-medium text-slate-500 dark:text-slate-400">
-            Peta Interaktif
-          </span>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Museum count badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            {totalData} Museum
-          </div>
-
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
@@ -224,7 +230,7 @@ const MapPage = () => {
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <ArrowLeft size={16} />
-            <span className="hidden sm:inline">Beranda</span>
+            <span className="hidden sm:inline">Kembali</span>
           </Link>
         </div>
       </header>
@@ -233,11 +239,10 @@ const MapPage = () => {
       <div className="flex-1 flex relative overflow-hidden">
         {/* Sidebar Filter */}
         <div
-          className={`absolute lg:relative z-10 h-full transition-all duration-300 ease-in-out ${
-            sidebarOpen
+          className={`absolute lg:relative z-10 h-full transition-all duration-300 ease-in-out ${sidebarOpen
               ? 'translate-x-0 w-80 lg:w-96'
               : '-translate-x-full lg:-translate-x-full w-80 lg:w-0'
-          }`}
+            }`}
         >
           <FilterPanel
             provinces={provinces}
@@ -262,6 +267,17 @@ const MapPage = () => {
           />
         </div>
 
+        <button
+          type="button"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          className="hidden lg:flex absolute top-1/2 -translate-y-1/2 z-20 h-14 w-8 items-center justify-center rounded-r-xl border border-slate-200 bg-white/95 text-slate-700 shadow-lg backdrop-blur-sm transition-all duration-300 hover:bg-white dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-900"
+          style={{ left: sidebarOpen ? 'calc(24rem - 0.75rem)' : '0.5rem' }}
+          aria-label={sidebarOpen ? 'Tutup sidebar filter' : 'Buka sidebar filter'}
+          title={sidebarOpen ? 'Tutup sidebar' : 'Buka sidebar'}
+        >
+          {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+        </button>
+
         {/* Backdrop for mobile */}
         {sidebarOpen && (
           <div
@@ -284,6 +300,7 @@ const MapPage = () => {
             museums={museums}
             userLocation={userLocation}
             nearbyRadius={nearbyMode ? nearbyRadius : null}
+            sidebarOpen={sidebarOpen}
           />
         </div>
       </div>

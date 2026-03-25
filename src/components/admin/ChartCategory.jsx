@@ -1,7 +1,18 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-const COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899', '#14B8A6', '#EF4444', '#6366F1', '#06B6D4', '#64748B'];
+const MUTED_COLORS = [
+  '#2DD4BF',
+  '#22D3EE',
+  '#38BDF8',
+  '#60A5FA',
+  '#818CF8',
+  '#A78BFA',
+  '#34D399',
+  '#93C5FD',
+  '#67E8F9',
+  '#C4B5FD',
+];
 
 const ChartCategory = ({ data = [], loading = false }) => {
   if (loading) {
@@ -46,7 +57,7 @@ const ChartCategory = ({ data = [], loading = false }) => {
               stroke="none"
             >
               {data.map((_, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                <Cell key={index} fill={MUTED_COLORS[index % MUTED_COLORS.length]} />
               ))}
             </Pie>
             <Tooltip

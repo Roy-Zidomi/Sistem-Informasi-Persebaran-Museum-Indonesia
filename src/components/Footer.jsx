@@ -37,7 +37,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Platform</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors text-sm">Interactive Map (Soon)</a></li>
+              <li><a href="#" className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors text-sm">Interactive Map</a></li>
               <li><a href="#" className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors text-sm">Museum Directory</a></li>
               <li><a href="#faq" className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors text-sm">FAQ</a></li>
               <li><a href="#" className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors text-sm">Contact Us</a></li>

@@ -6,7 +6,7 @@ const Facts = () => {
   const stats = [
     {
       icon: <Lightbulb className="w-8 h-8" />,
-      value: "400+",
+      value: "600+",
       label: "Museums in Indonesia",
       description: "Scattered across the archipelago, preserving local and national histories."
     },
@@ -18,7 +18,7 @@ const Facts = () => {
     },
     {
       icon: <GlobeX className="w-8 h-8" />,
-      value: "10+",
+      value: "7+",
       label: "Diverse Categories",
       description: "From maritime to aviation, fine arts to natural history."
     }

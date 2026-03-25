@@ -1,31 +1,31 @@
 import React from 'react';
-import { Building2, Globe, Tag, Landmark, HelpCircle } from 'lucide-react';
 
 const cards = [
-  { key: 'total_museum', label: 'Total Museum', icon: Landmark, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20' },
-  { key: 'total_provinsi', label: 'Total Provinsi', icon: Globe, color: 'from-blue-500 to-indigo-500', shadow: 'shadow-blue-500/20' },
-  { key: 'total_kabupaten', label: 'Total Kabupaten', icon: Building2, color: 'from-purple-500 to-violet-500', shadow: 'shadow-purple-500/20' },
-  { key: 'total_kategori', label: 'Total Kategori', icon: Tag, color: 'from-amber-500 to-orange-500', shadow: 'shadow-amber-500/20' },
-  { key: 'museum_tanpa_kategori', label: 'Tanpa Kategori', icon: HelpCircle, color: 'from-rose-500 to-pink-500', shadow: 'shadow-rose-500/20' },
+  { key: 'total_museum', label: 'Total Museum', accent: '#2DD4BF' },
+  { key: 'total_provinsi', label: 'Total Provinsi', accent: '#60A5FA' },
+  { key: 'total_kabupaten', label: 'Total Kabupaten', accent: '#818CF8' },
+  { key: 'total_kategori', label: 'Total Kategori', accent: '#A78BFA' },
+  { key: 'museum_tanpa_kategori', label: 'Tanpa Kategori', accent: '#38BDF8' },
 ];
 
 const StatCards = ({ stats = {}, loading = false }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-      {cards.map(({ key, label, icon: Icon, color, shadow }) => (
+      {cards.map(({ key, label, accent }) => (
         <div
           key={key}
-          className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${color} p-5 shadow-lg ${shadow} transition-all hover:scale-[1.02] hover:shadow-xl`}
+          className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+          style={{ borderColor: `${accent}33` }}
         >
-          <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-x-4 -translate-y-4" />
+          <div className="absolute inset-x-0 top-0 h-0.5" style={{ backgroundColor: `${accent}AA` }} />
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full -translate-x-4 -translate-y-4" style={{ backgroundColor: `${accent}22` }} />
           <div className="relative">
-            <Icon size={20} className="text-white/80 mb-3" />
             {loading ? (
-              <div className="h-8 w-16 bg-white/20 rounded-lg animate-pulse" />
+              <div className="h-8 w-16 bg-slate-200 dark:bg-slate-700 rounded-lg animate-pulse" />
             ) : (
-              <p className="text-2xl font-bold text-white">{stats[key] ?? 0}</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats[key] ?? 0}</p>
             )}
-            <p className="text-white/70 text-xs font-medium mt-1">{label}</p>
+            <p className="text-xs font-medium mt-1" style={{ color: `${accent}DD` }}>{label}</p>
           </div>
         </div>
       ))}
