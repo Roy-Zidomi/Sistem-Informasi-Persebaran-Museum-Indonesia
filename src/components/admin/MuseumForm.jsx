@@ -12,6 +12,14 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
     provinsi_id: '',
     kabupaten_id: '',
     kategori_id: '',
+    deskripsi: '',
+    tahun_dibangun: '',
+    alamat_lengkap: '',
+    jam_buka: '',
+    harga_tiket: '',
+    website: '',
+    sumber_informasi: '',
+    foto_url: '',
   });
 
   const [provinces, setProvinces] = useState([]);
@@ -22,18 +30,42 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
 
   // Prefill form when editing
   useEffect(() => {
-    if (museum) {
-      setFormData({
+    const nextFormData = museum
+      ? {
         nama_museum: museum.nama_museum || '',
         latitude: museum.latitude || '',
         longitude: museum.longitude || '',
         provinsi_id: museum.provinsi_id || '',
         kabupaten_id: museum.kabupaten_id || '',
         kategori_id: museum.kategori_id || '',
-      });
-    } else {
-      setFormData({ nama_museum: '', latitude: '', longitude: '', provinsi_id: '', kabupaten_id: '', kategori_id: '' });
-    }
+        deskripsi: museum.deskripsi || '',
+        tahun_dibangun: museum.tahun_dibangun || '',
+        alamat_lengkap: museum.alamat_lengkap || '',
+        jam_buka: museum.jam_buka || '',
+        harga_tiket: museum.harga_tiket || '',
+        website: museum.website || '',
+        sumber_informasi: museum.sumber_informasi || '',
+        foto_url: museum.foto_url || '',
+      }
+      : {
+        nama_museum: '',
+        latitude: '',
+        longitude: '',
+        provinsi_id: '',
+        kabupaten_id: '',
+        kategori_id: '',
+        deskripsi: '',
+        tahun_dibangun: '',
+        alamat_lengkap: '',
+        jam_buka: '',
+        harga_tiket: '',
+        website: '',
+        sumber_informasi: '',
+        foto_url: '',
+      };
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFormData(nextFormData);
   }, [museum]);
 
   // Load provinces and categories
@@ -96,10 +128,26 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
         provinsi_id: parseInt(formData.provinsi_id),
         kabupaten_id: parseInt(formData.kabupaten_id),
         kategori_id: formData.kategori_id ? parseInt(formData.kategori_id) : null,
+        tahun_dibangun: formData.tahun_dibangun ? parseInt(formData.tahun_dibangun, 10) : null,
       });
       setSuccess(isEdit ? 'Museum berhasil diperbarui!' : 'Museum berhasil ditambahkan!');
       if (!isEdit) {
-        setFormData({ nama_museum: '', latitude: '', longitude: '', provinsi_id: '', kabupaten_id: '', kategori_id: '' });
+        setFormData({
+          nama_museum: '',
+          latitude: '',
+          longitude: '',
+          provinsi_id: '',
+          kabupaten_id: '',
+          kategori_id: '',
+          deskripsi: '',
+          tahun_dibangun: '',
+          alamat_lengkap: '',
+          jam_buka: '',
+          harga_tiket: '',
+          website: '',
+          sumber_informasi: '',
+          foto_url: '',
+        });
       }
     } catch (err) {
       setErrors({ submit: err.response?.data?.message || 'Terjadi kesalahan' });
@@ -147,6 +195,100 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
             className={inputClass('nama_museum')}
           />
           {errors.nama_museum && <p className="text-xs text-red-500 mt-1">{errors.nama_museum}</p>}
+        </div>
+
+        {/* Informasi dasar detail museum */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Tahun Dibangun</label>
+            <input
+              type="number"
+              min="1000"
+              max="2100"
+              value={formData.tahun_dibangun}
+              onChange={(e) => handleChange('tahun_dibangun', e.target.value)}
+              placeholder="Contoh: 1975"
+              className={inputClass('tahun_dibangun')}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Jam Buka</label>
+            <input
+              type="text"
+              value={formData.jam_buka}
+              onChange={(e) => handleChange('jam_buka', e.target.value)}
+              placeholder="Contoh: 08:00 - 16:00"
+              className={inputClass('jam_buka')}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Harga Tiket</label>
+            <input
+              type="text"
+              value={formData.harga_tiket}
+              onChange={(e) => handleChange('harga_tiket', e.target.value)}
+              placeholder="Contoh: Rp10.000"
+              className={inputClass('harga_tiket')}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Website</label>
+            <input
+              type="url"
+              value={formData.website}
+              onChange={(e) => handleChange('website', e.target.value)}
+              placeholder="https://contohwebsite.id"
+              className={inputClass('website')}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Alamat Lengkap</label>
+          <textarea
+            value={formData.alamat_lengkap}
+            onChange={(e) => handleChange('alamat_lengkap', e.target.value)}
+            placeholder="Masukkan alamat lengkap museum"
+            rows={2}
+            className={inputClass('alamat_lengkap')}
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Deskripsi / Pengertian</label>
+          <textarea
+            value={formData.deskripsi}
+            onChange={(e) => handleChange('deskripsi', e.target.value)}
+            placeholder="Tulis ringkasan sejarah atau pengertian museum"
+            rows={4}
+            className={inputClass('deskripsi')}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Sumber Informasi</label>
+            <input
+              type="text"
+              value={formData.sumber_informasi}
+              onChange={(e) => handleChange('sumber_informasi', e.target.value)}
+              placeholder="Contoh: Dinas Pariwisata Kota..."
+              className={inputClass('sumber_informasi')}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">URL Foto</label>
+            <input
+              type="url"
+              value={formData.foto_url}
+              onChange={(e) => handleChange('foto_url', e.target.value)}
+              placeholder="https://domain.com/foto-museum.jpg"
+              className={inputClass('foto_url')}
+            />
+          </div>
         </div>
 
         {/* Provinsi & Kabupaten */}

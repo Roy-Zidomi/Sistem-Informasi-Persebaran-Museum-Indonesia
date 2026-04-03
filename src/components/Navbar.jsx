@@ -1,17 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Moon, Sun, Menu, X, Landmark, Map } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { language, changeLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
   const MotionDiv = motion.div;
   const MotionAside = motion.aside;
+  const copy = {
+    id: {
+      nav: {
+        home: 'Home',
+        about: 'Tentang',
+        types: 'Tipe',
+        benefits: 'Manfaat',
+        featured: 'Unggulan',
+        statistics: 'Statistik',
+        faq: 'FAQ',
+      },
+      themeAria: 'Ganti tema',
+      exploreMap: 'Jelajah Peta',
+      menu: 'Menu',
+      closeMenu: 'Tutup menu',
+      lightMode: 'Mode Terang',
+      darkMode: 'Mode Gelap',
+      languageAria: 'Pilih bahasa',
+    },
+    en: {
+      nav: {
+        home: 'Home',
+        about: 'About',
+        types: 'Types',
+        benefits: 'Benefits',
+        featured: 'Featured',
+        statistics: 'Statistics',
+        faq: 'FAQ',
+      },
+      themeAria: 'Toggle theme',
+      exploreMap: 'Explore Map',
+      menu: 'Menu',
+      closeMenu: 'Close menu',
+      lightMode: 'Light Mode',
+      darkMode: 'Dark Mode',
+      languageAria: 'Select language',
+    },
+  };
+  const text = copy[language] || copy.id;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,12 +78,13 @@ const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#what-is-museum' },
-    { name: 'Types', href: '#types' },
-    { name: 'Benefits', href: '#benefits' },
-    { name: 'Featured', href: '#featured' },
-    { name: 'FAQ', href: '#faq' },
+    { name: text.nav.home, href: '#home' },
+    { name: text.nav.about, href: '#what-is-museum' },
+    { name: text.nav.types, href: '#types' },
+    { name: text.nav.benefits, href: '#benefits' },
+    { name: text.nav.featured, href: '#featured' },
+    { name: text.nav.statistics, href: '#statistics' },
+    { name: text.nav.faq, href: '#faq' },
   ];
 
   return (
@@ -83,10 +125,35 @@ const Navbar = () => {
 
             {/* Right side actions */}
             <div className="flex items-center gap-4">
+              <div
+                className="hidden md:flex items-center rounded-full border border-slate-200/80 dark:border-slate-700/70 bg-white/70 dark:bg-slate-800/70 p-1"
+                aria-label={text.languageAria}
+              >
+                <button
+                  onClick={() => changeLanguage('id')}
+                  className={`px-3 py-1.5 text-xs rounded-full font-semibold transition-colors ${
+                    language === 'id'
+                      ? 'bg-emerald-500 text-white'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  ID
+                </button>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={`px-3 py-1.5 text-xs rounded-full font-semibold transition-colors ${
+                    language === 'en'
+                      ? 'bg-emerald-500 text-white'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
               <button
                 onClick={toggleTheme}
                 className="hidden md:flex p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
-                aria-label="Toggle theme"
+                aria-label={text.themeAria}
               >
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
@@ -95,7 +162,7 @@ const Navbar = () => {
                 className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-indigo-500 hover:from-emerald-600 hover:to-indigo-600 text-white text-sm font-medium shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/40 hover:-translate-y-0.5"
               >
                 <Map size={16} />
-                Explore Map
+                {text.exploreMap}
               </Link>
 
               {/* Mobile Menu Button */}
@@ -128,11 +195,11 @@ const Navbar = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-base font-semibold text-slate-800 dark:text-white">Menu</span>
+                  <span className="text-base font-semibold text-slate-800 dark:text-white">{text.menu}</span>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2 rounded-lg text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                    aria-label="Close menu"
+                    aria-label={text.closeMenu}
                   >
                     <X size={20} />
                   </button>
@@ -152,12 +219,34 @@ const Navbar = () => {
                 </div>
 
                 <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => changeLanguage('id')}
+                      className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                        language === 'id'
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                      }`}
+                    >
+                      Indonesia
+                    </button>
+                    <button
+                      onClick={() => changeLanguage('en')}
+                      className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                        language === 'en'
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'
+                      }`}
+                    >
+                      English
+                    </button>
+                  </div>
                   <button
                     onClick={toggleTheme}
                     className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium transition-colors"
                   >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === 'dark' ? text.lightMode : text.darkMode}
                   </button>
                   <Link
                     to="/map"
@@ -165,7 +254,7 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <Map size={16} />
-                    Explore Map
+                    {text.exploreMap}
                   </Link>
                 </div>
               </MotionAside>

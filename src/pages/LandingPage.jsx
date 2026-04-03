@@ -9,6 +9,7 @@ import Facts from '../components/Facts';
 import AboutPlatform from '../components/AboutPlatform';
 import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
+import Statistics from '../components/Statistics';
 
 const LandingPage = () => {
   return (
@@ -20,6 +21,7 @@ const LandingPage = () => {
         <TypesMuseum />
         <Benefits />
         <FeaturedMuseums />
+        <Statistics />
         <Facts />
         <AboutPlatform />
         <FAQ />

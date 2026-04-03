@@ -1,19 +1,16 @@
 import L from 'leaflet';
 
-/**
- * Mapping warna berdasarkan kategori museum.
- * Jika kategori tidak dikenali, gunakan warna default abu-abu.
- */
+
 const CATEGORY_COLORS = {
-  'Sejarah': { bg: '#3B82F6', border: '#2563EB' },      // blue
-  'Seni': { bg: '#EC4899', border: '#DB2777' },           // pink
-  'Umum': { bg: '#10B981', border: '#059669' },            // emerald
-  'Khusus': { bg: '#F59E0B', border: '#D97706' },         // amber
-  'Arkeologi': { bg: '#8B5CF6', border: '#7C3AED' },      // violet
-  'Memorial': { bg: '#EF4444', border: '#DC2626' },        // red
-  'Alam': { bg: '#14B8A6', border: '#0D9488' },            // teal
-  'Ilmu Pengetahuan': { bg: '#6366F1', border: '#4F46E5' }, // indigo
-  'Teknologi': { bg: '#06B6D4', border: '#0891B2' },       // cyan
+  'Sejarah': { bg: '#3B82F6', border: '#2563EB' },      
+  'Seni': { bg: '#EC4899', border: '#DB2777' },          
+  'Umum': { bg: '#10B981', border: '#059669' },            
+  'Khusus': { bg: '#F59E0B', border: '#D97706' },         
+  'Arkeologi': { bg: '#8B5CF6', border: '#7C3AED' },      
+  'Memorial': { bg: '#EF4444', border: '#DC2626' },        
+  'Alam': { bg: '#14B8A6', border: '#0D9488' },            
+  'Ilmu Pengetahuan': { bg: '#6366F1', border: '#4F46E5' }, 
+  'Teknologi': { bg: '#06B6D4', border: '#0891B2' },       
 };
 
 const DEFAULT_COLOR = { bg: '#64748B', border: '#475569' }; // slate
