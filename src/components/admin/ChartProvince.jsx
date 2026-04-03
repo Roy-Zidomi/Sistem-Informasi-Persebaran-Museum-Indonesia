@@ -28,15 +28,14 @@ const ChartProvince = ({ data = [], loading = false }) => {
       <p className="text-xs text-slate-400 mb-4">Distribusi jumlah museum berdasarkan provinsi</p>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 60 }}>
+          <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 8 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
             <XAxis
               dataKey="label"
-              tick={{ fill: '#94a3b8', fontSize: 9 }}
-              angle={-45}
-              textAnchor="end"
-              interval={0}
-              height={80}
+              tick={false}
+              tickLine={false}
+              axisLine={false}
+              height={8}
             />
             <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} />
             <Tooltip

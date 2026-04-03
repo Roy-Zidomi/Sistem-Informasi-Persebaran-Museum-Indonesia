@@ -1,28 +1,66 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lightbulb, Users, GlobeX } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const Facts = () => {
-  const stats = [
-    {
-      icon: <Lightbulb className="w-8 h-8" />,
-      value: "600+",
-      label: "Museums in Indonesia",
-      description: "Scattered across the archipelago, preserving local and national histories."
+  const { language } = useLanguage();
+  const MotionDiv = motion.div;
+  const MotionH2 = motion.h2;
+  const MotionP = motion.p;
+  const content = {
+    id: {
+      title: 'Tahukah Kamu?',
+      description:
+        'Museum menyimpan cerita dan fakta luar biasa yang membentuk cara kita memahami dunia. Ini sebagian kecil gambaran lanskap museum Indonesia.',
+      stats: [
+        {
+          icon: <Lightbulb className="w-8 h-8" />,
+          value: '600+',
+          label: 'Museum di Indonesia',
+          description: 'Tersebar di seluruh kepulauan, menjaga sejarah lokal dan nasional.',
+        },
+        {
+          icon: <Users className="w-8 h-8" />,
+          value: 'Jutaan',
+          label: 'Pengunjung Tahunan',
+          description: 'Wisatawan domestik dan internasional memperkaya wawasan mereka.',
+        },
+        {
+          icon: <GlobeX className="w-8 h-8" />,
+          value: '7+',
+          label: 'Kategori Beragam',
+          description: 'Dari maritim hingga aviasi, seni rupa hingga sejarah alam.',
+        },
+      ],
     },
-    {
-      icon: <Users className="w-8 h-8" />,
-      value: "Millions",
-      label: "Annual Visitors",
-      description: "Domestic and international tourists enriching their minds."
+    en: {
+      title: 'Did You Know?',
+      description:
+        "Museums hold incredible stories and facts that shape our understanding of the world. Here are just a few glimpses into Indonesia's museum landscape.",
+      stats: [
+        {
+          icon: <Lightbulb className="w-8 h-8" />,
+          value: '600+',
+          label: 'Museums in Indonesia',
+          description: 'Scattered across the archipelago, preserving local and national histories.',
+        },
+        {
+          icon: <Users className="w-8 h-8" />,
+          value: 'Millions',
+          label: 'Annual Visitors',
+          description: 'Domestic and international tourists enriching their minds.',
+        },
+        {
+          icon: <GlobeX className="w-8 h-8" />,
+          value: '7+',
+          label: 'Diverse Categories',
+          description: 'From maritime to aviation, fine arts to natural history.',
+        },
+      ],
     },
-    {
-      icon: <GlobeX className="w-8 h-8" />,
-      value: "7+",
-      label: "Diverse Categories",
-      description: "From maritime to aviation, fine arts to natural history."
-    }
-  ];
+  };
+  const text = content[language] || content.id;
 
   return (
     <section className="py-24 relative overflow-hidden bg-slate-100 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800">
@@ -36,28 +74,28 @@ const Facts = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 max-w-2xl mx-auto">
-          <motion.h2 
+          <MotionH2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight"
           >
-            Did You Know?
-          </motion.h2>
-          <motion.p
+            {text.title}
+          </MotionH2>
+          <MotionP
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-slate-600 dark:text-slate-300 text-lg"
           >
-            Museums hold incredible stories and facts that shape our understanding of the world. Here are just a few glimpses into Indonesia's museum landscape.
-          </motion.p>
+            {text.description}
+          </MotionP>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {stats.map((stat, idx) => (
-            <motion.div
+          {text.stats.map((stat, idx) => (
+            <MotionDiv
               key={idx}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -73,7 +111,7 @@ const Facts = () => {
               <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                 {stat.description}
               </p>
-            </motion.div>
+            </MotionDiv>
           ))}
         </div>
       </div>

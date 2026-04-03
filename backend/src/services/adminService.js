@@ -1,6 +1,13 @@
 const { query } = require('../config/db');
 const { randomUUID } = require('crypto');
 
+const sanitizeOptionalText = (value) => {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
 /**
  * Helper: bangun WHERE clause dari filter global
  */
@@ -158,6 +165,7 @@ const getMuseumsAdmin = async ({ page = 1, limit = 10, offset = 0, search, provi
   // Data
   const sql = `
     SELECT m.id, m.source_id, m.nama_museum, m.latitude, m.longitude,
+           m.deskripsi, m.tahun_dibangun, m.alamat_lengkap, m.jam_buka, m.harga_tiket, m.website, m.sumber_informasi, m.foto_url,
            m.provinsi_id, p.nama_provinsi,
            m.kabupaten_id, k.nama_kabupaten,
            m.kategori_id, kt.nama_kategori
@@ -185,16 +193,54 @@ const getMuseumsAdmin = async ({ page = 1, limit = 10, offset = 0, search, provi
 /**
  * Tambah museum baru
  */
-const createMuseum = async ({ source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id }) => {
+const createMuseum = async ({
+  source_id,
+  nama_museum,
+  latitude,
+  longitude,
+  provinsi_id,
+  kabupaten_id,
+  kategori_id,
+  deskripsi,
+  tahun_dibangun,
+  alamat_lengkap,
+  jam_buka,
+  harga_tiket,
+  website,
+  sumber_informasi,
+  foto_url,
+}) => {
   const normalizedSourceId = typeof source_id === 'string' ? source_id.trim() : '';
   const finalSourceId = normalizedSourceId || `admin/${randomUUID()}`;
+  const normalizedYear = tahun_dibangun === '' || tahun_dibangun === undefined || tahun_dibangun === null
+    ? null
+    : parseInt(tahun_dibangun, 10);
 
   const sql = `
-    INSERT INTO museum (source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO museum (
+      source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id,
+      deskripsi, tahun_dibangun, alamat_lengkap, jam_buka, harga_tiket, website, sumber_informasi, foto_url
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
     RETURNING *
   `;
-  const params = [finalSourceId, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id || null];
+  const params = [
+    finalSourceId,
+    nama_museum,
+    latitude,
+    longitude,
+    provinsi_id,
+    kabupaten_id,
+    kategori_id || null,
+    sanitizeOptionalText(deskripsi),
+    Number.isNaN(normalizedYear) ? null : normalizedYear,
+    sanitizeOptionalText(alamat_lengkap),
+    sanitizeOptionalText(jam_buka),
+    sanitizeOptionalText(harga_tiket),
+    sanitizeOptionalText(website),
+    sanitizeOptionalText(sumber_informasi),
+    sanitizeOptionalText(foto_url),
+  ];
   const result = await query(sql, params);
   return result.rows[0];
 };
@@ -202,15 +248,55 @@ const createMuseum = async ({ source_id, nama_museum, latitude, longitude, provi
 /**
  * Update museum
  */
-const updateMuseum = async (id, { nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id }) => {
+const updateMuseum = async (
+  id,
+  {
+    nama_museum,
+    latitude,
+    longitude,
+    provinsi_id,
+    kabupaten_id,
+    kategori_id,
+    deskripsi,
+    tahun_dibangun,
+    alamat_lengkap,
+    jam_buka,
+    harga_tiket,
+    website,
+    sumber_informasi,
+    foto_url,
+  }
+) => {
+  const normalizedYear = tahun_dibangun === '' || tahun_dibangun === undefined || tahun_dibangun === null
+    ? null
+    : parseInt(tahun_dibangun, 10);
+
   const sql = `
     UPDATE museum
     SET nama_museum = $1, latitude = $2, longitude = $3,
-        provinsi_id = $4, kabupaten_id = $5, kategori_id = $6
-    WHERE id = $7
+        provinsi_id = $4, kabupaten_id = $5, kategori_id = $6,
+        deskripsi = $7, tahun_dibangun = $8, alamat_lengkap = $9, jam_buka = $10,
+        harga_tiket = $11, website = $12, sumber_informasi = $13, foto_url = $14
+    WHERE id = $15
     RETURNING *
   `;
-  const params = [nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id || null, id];
+  const params = [
+    nama_museum,
+    latitude,
+    longitude,
+    provinsi_id,
+    kabupaten_id,
+    kategori_id || null,
+    sanitizeOptionalText(deskripsi),
+    Number.isNaN(normalizedYear) ? null : normalizedYear,
+    sanitizeOptionalText(alamat_lengkap),
+    sanitizeOptionalText(jam_buka),
+    sanitizeOptionalText(harga_tiket),
+    sanitizeOptionalText(website),
+    sanitizeOptionalText(sumber_informasi),
+    sanitizeOptionalText(foto_url),
+    id,
+  ];
   const result = await query(sql, params);
   return result.rows[0] || null;
 };

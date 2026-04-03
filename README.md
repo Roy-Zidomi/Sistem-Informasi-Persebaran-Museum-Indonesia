@@ -157,6 +157,12 @@ The backend expects these core tables to exist:
 
 Make sure relations and IDs are consistent with the query logic in `backend/src/services`.
 
+### Museum Detail Fields Migration
+
+To enable richer museum detail pages (description, year built, address, opening hours, ticket price, etc.), run this SQL file once on your PostgreSQL database:
+
+`backend/migrations/2026-04-03-add-museum-detail-fields.sql`
+
 ## Build for Production
 
 Frontend:
