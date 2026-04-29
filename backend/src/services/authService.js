@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 /**
  * Login admin menggunakan kredensial dari environment variables.

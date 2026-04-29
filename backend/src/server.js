@@ -18,7 +18,7 @@ const startServer = async () => {
     client.release();
 
     // Start Express server
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🏛️  Museum API Server running on http://localhost:${PORT}`);
       console.log(`📋 Health check: http://localhost:${PORT}/api/health`);
       console.log(`📋 Museums:      http://localhost:${PORT}/api/museums`);
@@ -26,6 +26,17 @@ const startServer = async () => {
       console.log(`📋 Regencies:    http://localhost:${PORT}/api/regencies`);
       console.log(`📋 Categories:   http://localhost:${PORT}/api/categories`);
       console.log('-------------------------------------------');
+    });
+
+    server.on('error', async (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} sedang dipakai proses lain. Tutup server lama atau ubah PORT di .env.`);
+      } else {
+        console.error('Server gagal berjalan:', error.message);
+      }
+
+      await pool.end().catch(() => {});
+      process.exit(1);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error.message);

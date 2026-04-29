@@ -6,26 +6,30 @@ import MuseumDetailPage from './pages/MuseumDetailPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from './components/admin/ProtectedRoute';
+import ChatbotWidget from './components/ChatbotWidget';
 
 function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/map" element={<MapPage />} />
-      <Route path="/museum/:id" element={<MuseumDetailPage />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/museum/:id" element={<MuseumDetailPage />} />
 
-      {/* Admin Routes */}
-      <Route path="/admin/login" element={<LoginPage />} />
-      <Route
-        path="/admin/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<LoginPage />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <ChatbotWidget />
+    </>
   );
 }
 
