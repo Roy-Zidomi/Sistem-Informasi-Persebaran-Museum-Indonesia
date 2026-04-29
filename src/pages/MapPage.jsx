@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { getMuseums, getNearbyMuseums, getProvinces, getRegencies, getCategories } from '../api/museumApi';
 import MapView from '../components/map/MapView';
 import FilterPanel from '../components/map/FilterPanel';
@@ -9,8 +10,37 @@ import { Landmark, Moon, Sun, ArrowLeft, Menu, X, ChevronLeft, ChevronRight } fr
 
 const MapPage = () => {
   const { theme, toggleTheme } = useTheme();
+  const { language, changeLanguage } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const hasAutoTriggeredNearby = useRef(false);
+  const text = {
+    id: {
+      back: 'Kembali',
+      languageAria: 'Pilih bahasa',
+      themeAria: 'Ganti tema',
+      openSidebar: 'Buka sidebar filter',
+      closeSidebar: 'Tutup sidebar filter',
+      openSidebarTitle: 'Buka sidebar',
+      closeSidebarTitle: 'Tutup sidebar',
+      loadError: 'Gagal memuat data museum',
+      geoUnsupported: 'Browser tidak mendukung geolokasi',
+      nearbyError: 'Gagal mencari museum terdekat',
+      locationError: 'Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.',
+    },
+    en: {
+      back: 'Back',
+      languageAria: 'Select language',
+      themeAria: 'Toggle theme',
+      openSidebar: 'Open filter sidebar',
+      closeSidebar: 'Close filter sidebar',
+      openSidebarTitle: 'Open sidebar',
+      closeSidebarTitle: 'Close sidebar',
+      loadError: 'Failed to load museum data',
+      geoUnsupported: 'Your browser does not support geolocation',
+      nearbyError: 'Failed to find nearby museums',
+      locationError: 'Failed to get your location. Please allow location access.',
+    },
+  }[language] || {};
 
   // Data state
   const [museums, setMuseums] = useState([]);
@@ -90,12 +120,12 @@ const MapPage = () => {
       setMuseums(res.data || []);
       setTotalData(res.pagination?.total_data || res.data?.length || 0);
     } catch (err) {
-      setError('Gagal memuat data museum');
+      setError(text.loadError);
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [selectedProvince, selectedRegency, selectedCategory, searchQuery, nearbyMode]);
+  }, [selectedProvince, selectedRegency, selectedCategory, searchQuery, nearbyMode, text.loadError]);
 
   useEffect(() => {
     fetchMuseums();
@@ -104,7 +134,7 @@ const MapPage = () => {
   // Handle nearby search
   const handleNearby = useCallback(async () => {
     if (!navigator.geolocation) {
-      setError('Browser tidak mendukung geolokasi');
+      setError(text.geoUnsupported);
       return;
     }
 
@@ -122,20 +152,20 @@ const MapPage = () => {
           setMuseums(res.data || []);
           setTotalData(res.data?.length || 0);
         } catch (err) {
-          setError('Gagal mencari museum terdekat');
+          setError(text.nearbyError);
           console.error(err);
         } finally {
           setLoading(false);
         }
       },
       (err) => {
-        setError('Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.');
+        setError(text.locationError);
         setLoading(false);
         console.error(err);
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
-  }, [nearbyRadius]);
+  }, [nearbyRadius, text.geoUnsupported, text.nearbyError, text.locationError]);
 
   // Reset nearby and go back to filter mode
   const handleResetNearby = useCallback(() => {
@@ -221,16 +251,45 @@ const MapPage = () => {
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
+            aria-label={text.themeAria}
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+
+          <div
+            className="flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1 dark:border-slate-700 dark:bg-slate-800"
+            aria-label={text.languageAria}
+          >
+            <button
+              type="button"
+              onClick={() => changeLanguage('id')}
+              className={`h-8 px-3 rounded-lg text-xs font-bold transition-colors ${
+                language === 'id'
+                  ? 'bg-emerald-500 text-white shadow-sm'
+                  : 'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700'
+              }`}
+            >
+              ID
+            </button>
+            <button
+              type="button"
+              onClick={() => changeLanguage('en')}
+              className={`h-8 px-3 rounded-lg text-xs font-bold transition-colors ${
+                language === 'en'
+                  ? 'bg-emerald-500 text-white shadow-sm'
+                  : 'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700'
+              }`}
+            >
+              EN
+            </button>
+          </div>
 
           <Link
             to="/"
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <ArrowLeft size={16} />
-            <span className="hidden sm:inline">Kembali</span>
+            <span className="hidden sm:inline">{text.back}</span>
           </Link>
         </div>
       </header>
@@ -272,8 +331,8 @@ const MapPage = () => {
           onClick={() => setSidebarOpen((prev) => !prev)}
           className="hidden lg:flex absolute top-1/2 -translate-y-1/2 z-20 h-14 w-8 items-center justify-center rounded-r-xl border border-slate-200 bg-white/95 text-slate-700 shadow-lg backdrop-blur-sm transition-all duration-300 hover:bg-white dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-900"
           style={{ left: sidebarOpen ? 'calc(24rem - 0.75rem)' : '0.5rem' }}
-          aria-label={sidebarOpen ? 'Tutup sidebar filter' : 'Buka sidebar filter'}
-          title={sidebarOpen ? 'Tutup sidebar' : 'Buka sidebar'}
+          aria-label={sidebarOpen ? text.closeSidebar : text.openSidebar}
+          title={sidebarOpen ? text.closeSidebarTitle : text.openSidebarTitle}
         >
           {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>

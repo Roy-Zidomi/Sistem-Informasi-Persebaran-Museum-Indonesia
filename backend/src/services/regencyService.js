@@ -6,7 +6,13 @@ const { query } = require('../config/db');
  */
 const getAllRegencies = async (provinsiId = null) => {
   let sql = `
-    SELECT k.id, k.provinsi_id, k.nama_kabupaten, p.nama_provinsi
+    SELECT
+      k.id,
+      k.provinsi_id,
+      k.nama_kabupaten,
+      k.nama_kabupaten_en,
+      p.nama_provinsi,
+      p.nama_provinsi_en
     FROM kabupaten k
     LEFT JOIN provinsi p ON k.provinsi_id = p.id
   `;

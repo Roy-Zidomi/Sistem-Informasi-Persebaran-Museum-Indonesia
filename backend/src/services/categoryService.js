@@ -5,7 +5,7 @@ const { query } = require('../config/db');
  */
 const getAllCategories = async () => {
   const sql = `
-    SELECT id, nama_kategori
+    SELECT id, nama_kategori, nama_kategori_en
     FROM kategori
     ORDER BY nama_kategori ASC
   `;

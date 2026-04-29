@@ -13,9 +13,12 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
     kabupaten_id: '',
     kategori_id: '',
     deskripsi: '',
+    deskripsi_en: '',
     tahun_dibangun: '',
     alamat_lengkap: '',
+    alamat_lengkap_en: '',
     jam_buka: '',
+    jam_buka_en: '',
     harga_tiket: '',
     website: '',
     sumber_informasi: '',
@@ -39,9 +42,12 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
         kabupaten_id: museum.kabupaten_id || '',
         kategori_id: museum.kategori_id || '',
         deskripsi: museum.deskripsi || '',
+        deskripsi_en: museum.deskripsi_en || '',
         tahun_dibangun: museum.tahun_dibangun || '',
         alamat_lengkap: museum.alamat_lengkap || '',
+        alamat_lengkap_en: museum.alamat_lengkap_en || '',
         jam_buka: museum.jam_buka || '',
+        jam_buka_en: museum.jam_buka_en || '',
         harga_tiket: museum.harga_tiket || '',
         website: museum.website || '',
         sumber_informasi: museum.sumber_informasi || '',
@@ -55,9 +61,12 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
         kabupaten_id: '',
         kategori_id: '',
         deskripsi: '',
+        deskripsi_en: '',
         tahun_dibangun: '',
         alamat_lengkap: '',
+        alamat_lengkap_en: '',
         jam_buka: '',
+        jam_buka_en: '',
         harga_tiket: '',
         website: '',
         sumber_informasi: '',
@@ -140,9 +149,12 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
           kabupaten_id: '',
           kategori_id: '',
           deskripsi: '',
+          deskripsi_en: '',
           tahun_dibangun: '',
           alamat_lengkap: '',
+          alamat_lengkap_en: '',
           jam_buka: '',
+          jam_buka_en: '',
           harga_tiket: '',
           website: '',
           sumber_informasi: '',
@@ -221,6 +233,16 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
               className={inputClass('jam_buka')}
             />
           </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Opening Hours (English)</label>
+            <input
+              type="text"
+              value={formData.jam_buka_en}
+              onChange={(e) => handleChange('jam_buka_en', e.target.value)}
+              placeholder="Example: Monday 08:00 - 16:00"
+              className={inputClass('jam_buka_en')}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -258,6 +280,17 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
         </div>
 
         <div>
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Full Address (English)</label>
+          <textarea
+            value={formData.alamat_lengkap_en}
+            onChange={(e) => handleChange('alamat_lengkap_en', e.target.value)}
+            placeholder="Enter the museum address in English"
+            rows={2}
+            className={inputClass('alamat_lengkap_en')}
+          />
+        </div>
+
+        <div>
           <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Deskripsi / Pengertian</label>
           <textarea
             value={formData.deskripsi}
@@ -265,6 +298,17 @@ const MuseumForm = ({ museum = null, onSubmit, onCancel, loading = false }) => {
             placeholder="Tulis ringkasan sejarah atau pengertian museum"
             rows={4}
             className={inputClass('deskripsi')}
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Description (English)</label>
+          <textarea
+            value={formData.deskripsi_en}
+            onChange={(e) => handleChange('deskripsi_en', e.target.value)}
+            placeholder="Write the museum description in English"
+            rows={4}
+            className={inputClass('deskripsi_en')}
           />
         </div>
 

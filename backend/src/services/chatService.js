@@ -104,12 +104,17 @@ const formatMuseumContext = (museum) => {
   return [
     `Nama: ${trimText(museum.nama_museum, 160)}`,
     `Kategori: ${trimText(museum.nama_kategori, 120)}`,
+    `Category EN: ${trimText(museum.nama_kategori_en, 120)}`,
     `Lokasi: ${trimText([museum.nama_kabupaten, museum.nama_provinsi].filter(Boolean).join(', '), 180)}`,
+    `Location EN: ${trimText([museum.nama_kabupaten_en, museum.nama_provinsi_en].filter(Boolean).join(', '), 180)}`,
     `Alamat: ${trimText(museum.alamat_lengkap, 240)}`,
+    `Address EN: ${trimText(museum.alamat_lengkap_en, 240)}`,
     `Jam buka: ${trimText(museum.jam_buka, 180)}`,
+    `Opening hours EN: ${trimText(museum.jam_buka_en, 180)}`,
     `Harga tiket: ${trimText(museum.harga_tiket, 180)}`,
     `Tahun dibangun: ${trimText(museum.tahun_dibangun, 80)}`,
     `Deskripsi: ${trimText(museum.deskripsi)}`,
+    `Description EN: ${trimText(museum.deskripsi_en)}`,
   ].join('\n');
 };
 
@@ -122,19 +127,19 @@ const getAvailableFiltersContext = async () => {
   const [categoryResult, provinceResult] = await Promise.all([
     query(
       `
-        SELECT kt.nama_kategori, COUNT(m.id)::int AS total_museum
+        SELECT kt.nama_kategori, kt.nama_kategori_en, COUNT(m.id)::int AS total_museum
         FROM kategori kt
         LEFT JOIN museum m ON m.kategori_id = kt.id
-        GROUP BY kt.id, kt.nama_kategori
+        GROUP BY kt.id, kt.nama_kategori, kt.nama_kategori_en
         ORDER BY kt.nama_kategori ASC
       `
     ),
     query(
       `
-        SELECT p.nama_provinsi, COUNT(m.id)::int AS total_museum
+        SELECT p.nama_provinsi, p.nama_provinsi_en, COUNT(m.id)::int AS total_museum
         FROM provinsi p
         LEFT JOIN museum m ON m.provinsi_id = p.id
-        GROUP BY p.id, p.nama_provinsi
+        GROUP BY p.id, p.nama_provinsi, p.nama_provinsi_en
         HAVING COUNT(m.id) > 0
         ORDER BY total_museum DESC, p.nama_provinsi ASC
         LIMIT 12
@@ -143,10 +148,16 @@ const getAvailableFiltersContext = async () => {
   ]);
 
   const categories = categoryResult.rows
-    .map((category) => `${category.nama_kategori} (${category.total_museum})`)
+    .map((category) => {
+      const englishName = category.nama_kategori_en ? ` / ${category.nama_kategori_en}` : '';
+      return `${category.nama_kategori}${englishName} (${category.total_museum})`;
+    })
     .join(', ');
   const provinces = provinceResult.rows
-    .map((province) => `${province.nama_provinsi} (${province.total_museum})`)
+    .map((province) => {
+      const englishName = province.nama_provinsi_en ? ` / ${province.nama_provinsi_en}` : '';
+      return `${province.nama_provinsi}${englishName} (${province.total_museum})`;
+    })
     .join(', ');
 
   return [
@@ -193,19 +204,25 @@ const searchMuseumsForChat = async (message) => {
       m.latitude,
       m.longitude,
       m.deskripsi,
+      m.deskripsi_en,
       m.tahun_dibangun,
       m.alamat_lengkap,
+      m.alamat_lengkap_en,
       m.jam_buka,
+      m.jam_buka_en,
       m.harga_tiket,
       m.website,
       m.sumber_informasi,
       m.foto_url,
       m.provinsi_id,
       p.nama_provinsi,
+      p.nama_provinsi_en,
       m.kabupaten_id,
       k.nama_kabupaten,
+      k.nama_kabupaten_en,
       m.kategori_id,
       kt.nama_kategori,
+      kt.nama_kategori_en,
       COUNT(*) AS relevance_score
     FROM museum m
     LEFT JOIN provinsi p ON m.provinsi_id = p.id
@@ -215,14 +232,21 @@ const searchMuseumsForChat = async (message) => {
     WHERE
       LOWER(COALESCE(m.nama_museum, '')) LIKE '%' || st.term || '%'
       OR LOWER(COALESCE(k.nama_kabupaten, '')) LIKE '%' || st.term || '%'
+      OR LOWER(COALESCE(k.nama_kabupaten_en, '')) LIKE '%' || st.term || '%'
       OR LOWER(COALESCE(p.nama_provinsi, '')) LIKE '%' || st.term || '%'
+      OR LOWER(COALESCE(p.nama_provinsi_en, '')) LIKE '%' || st.term || '%'
       OR LOWER(COALESCE(kt.nama_kategori, '')) LIKE '%' || st.term || '%'
+      OR LOWER(COALESCE(kt.nama_kategori_en, '')) LIKE '%' || st.term || '%'
       OR LOWER(COALESCE(m.deskripsi, '')) LIKE '%' || st.term || '%'
+      OR LOWER(COALESCE(m.deskripsi_en, '')) LIKE '%' || st.term || '%'
     GROUP BY
       m.id,
       p.nama_provinsi,
+      p.nama_provinsi_en,
       k.nama_kabupaten,
-      kt.nama_kategori
+      k.nama_kabupaten_en,
+      kt.nama_kategori,
+      kt.nama_kategori_en
     ORDER BY relevance_score DESC, m.nama_museum ASC
     LIMIT $2
   `;

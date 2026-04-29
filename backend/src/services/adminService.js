@@ -165,10 +165,13 @@ const getMuseumsAdmin = async ({ page = 1, limit = 10, offset = 0, search, provi
   // Data
   const sql = `
     SELECT m.id, m.source_id, m.nama_museum, m.latitude, m.longitude,
-           m.deskripsi, m.tahun_dibangun, m.alamat_lengkap, m.jam_buka, m.harga_tiket, m.website, m.sumber_informasi, m.foto_url,
-           m.provinsi_id, p.nama_provinsi,
-           m.kabupaten_id, k.nama_kabupaten,
-           m.kategori_id, kt.nama_kategori
+           m.deskripsi, m.deskripsi_en, m.tahun_dibangun,
+           m.alamat_lengkap, m.alamat_lengkap_en,
+           m.jam_buka, m.jam_buka_en,
+           m.harga_tiket, m.website, m.sumber_informasi, m.foto_url,
+           m.provinsi_id, p.nama_provinsi, p.nama_provinsi_en,
+           m.kabupaten_id, k.nama_kabupaten, k.nama_kabupaten_en,
+           m.kategori_id, kt.nama_kategori, kt.nama_kategori_en
     FROM museum m
     LEFT JOIN provinsi p ON m.provinsi_id = p.id
     LEFT JOIN kabupaten k ON m.kabupaten_id = k.id
@@ -202,9 +205,12 @@ const createMuseum = async ({
   kabupaten_id,
   kategori_id,
   deskripsi,
+  deskripsi_en,
   tahun_dibangun,
   alamat_lengkap,
+  alamat_lengkap_en,
   jam_buka,
+  jam_buka_en,
   harga_tiket,
   website,
   sumber_informasi,
@@ -219,9 +225,10 @@ const createMuseum = async ({
   const sql = `
     INSERT INTO museum (
       source_id, nama_museum, latitude, longitude, provinsi_id, kabupaten_id, kategori_id,
-      deskripsi, tahun_dibangun, alamat_lengkap, jam_buka, harga_tiket, website, sumber_informasi, foto_url
+      deskripsi, deskripsi_en, tahun_dibangun, alamat_lengkap, alamat_lengkap_en,
+      jam_buka, jam_buka_en, harga_tiket, website, sumber_informasi, foto_url
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
     RETURNING *
   `;
   const params = [
@@ -233,9 +240,12 @@ const createMuseum = async ({
     kabupaten_id,
     kategori_id || null,
     sanitizeOptionalText(deskripsi),
+    sanitizeOptionalText(deskripsi_en),
     Number.isNaN(normalizedYear) ? null : normalizedYear,
     sanitizeOptionalText(alamat_lengkap),
+    sanitizeOptionalText(alamat_lengkap_en),
     sanitizeOptionalText(jam_buka),
+    sanitizeOptionalText(jam_buka_en),
     sanitizeOptionalText(harga_tiket),
     sanitizeOptionalText(website),
     sanitizeOptionalText(sumber_informasi),
@@ -258,9 +268,12 @@ const updateMuseum = async (
     kabupaten_id,
     kategori_id,
     deskripsi,
+    deskripsi_en,
     tahun_dibangun,
     alamat_lengkap,
+    alamat_lengkap_en,
     jam_buka,
+    jam_buka_en,
     harga_tiket,
     website,
     sumber_informasi,
@@ -275,9 +288,11 @@ const updateMuseum = async (
     UPDATE museum
     SET nama_museum = $1, latitude = $2, longitude = $3,
         provinsi_id = $4, kabupaten_id = $5, kategori_id = $6,
-        deskripsi = $7, tahun_dibangun = $8, alamat_lengkap = $9, jam_buka = $10,
-        harga_tiket = $11, website = $12, sumber_informasi = $13, foto_url = $14
-    WHERE id = $15
+        deskripsi = $7, deskripsi_en = $8, tahun_dibangun = $9,
+        alamat_lengkap = $10, alamat_lengkap_en = $11,
+        jam_buka = $12, jam_buka_en = $13,
+        harga_tiket = $14, website = $15, sumber_informasi = $16, foto_url = $17
+    WHERE id = $18
     RETURNING *
   `;
   const params = [
@@ -288,9 +303,12 @@ const updateMuseum = async (
     kabupaten_id,
     kategori_id || null,
     sanitizeOptionalText(deskripsi),
+    sanitizeOptionalText(deskripsi_en),
     Number.isNaN(normalizedYear) ? null : normalizedYear,
     sanitizeOptionalText(alamat_lengkap),
+    sanitizeOptionalText(alamat_lengkap_en),
     sanitizeOptionalText(jam_buka),
+    sanitizeOptionalText(jam_buka_en),
     sanitizeOptionalText(harga_tiket),
     sanitizeOptionalText(website),
     sanitizeOptionalText(sumber_informasi),

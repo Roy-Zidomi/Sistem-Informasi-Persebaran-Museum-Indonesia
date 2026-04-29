@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getMuseumById } from '../api/museumApi';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import {
   ArrowLeft,
@@ -49,9 +50,56 @@ const DetailInfoCard = ({ icon, title, children }) => (
 const MuseumDetailPage = () => {
   const { id } = useParams();
   const { theme, toggleTheme } = useTheme();
+  const { language, changeLanguage } = useLanguage();
   const [museum, setMuseum] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const text = {
+    id: {
+      loading: 'Memuat detail museum...',
+      notFound: 'Museum tidak ditemukan',
+      backToMap: 'Kembali ke Peta',
+      themeAria: 'Ganti tema',
+      languageAria: 'Pilih bahasa',
+      province: 'Provinsi',
+      regency: 'Kabupaten / Kota',
+      category: 'Kategori',
+      uncategorized: 'Tidak dikategorikan',
+      coordinates: 'Koordinat',
+      yearBuilt: 'Tahun Dibangun',
+      openingHours: 'Jam Buka',
+      ticketPrice: 'Harga Tiket',
+      website: 'Website',
+      fullAddress: 'Alamat Lengkap',
+      description: 'Deskripsi / Pengertian Museum',
+      noDescription: 'Belum ada deskripsi museum.',
+      source: 'Sumber Informasi',
+      openGoogleMaps: 'Buka di Google Maps',
+      translationFallback: '',
+    },
+    en: {
+      loading: 'Loading museum details...',
+      notFound: 'Museum not found',
+      backToMap: 'Back to Map',
+      themeAria: 'Toggle theme',
+      languageAria: 'Select language',
+      province: 'Province',
+      regency: 'Regency / City',
+      category: 'Category',
+      uncategorized: 'Uncategorized',
+      coordinates: 'Coordinates',
+      yearBuilt: 'Year Built',
+      openingHours: 'Opening Hours',
+      ticketPrice: 'Ticket Price',
+      website: 'Website',
+      fullAddress: 'Full Address',
+      description: 'Museum Description',
+      noDescription: 'No museum description is available yet.',
+      source: 'Information Source',
+      openGoogleMaps: 'Open in Google Maps',
+      translationFallback: 'English translation is not available yet, so the original Indonesian text is shown.',
+    },
+  }[language] || {};
 
   useEffect(() => {
     const fetchMuseum = async () => {
@@ -60,20 +108,20 @@ const MuseumDetailPage = () => {
         const res = await getMuseumById(id);
         setMuseum(res.data);
       } catch {
-        setError('Museum tidak ditemukan');
+        setError(text.notFound);
       } finally {
         setLoading(false);
       }
     };
     fetchMuseum();
-  }, [id]);
+  }, [id, text.notFound]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-slate-500 dark:text-slate-400 font-medium">Memuat detail museum...</p>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">{text.loading}</p>
         </div>
       </div>
     );
@@ -83,13 +131,13 @@ const MuseumDetailPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="text-center">
-          <p className="text-red-500 text-lg font-semibold mb-4">{error || 'Museum tidak ditemukan'}</p>
+          <p className="text-red-500 text-lg font-semibold mb-4">{error || text.notFound}</p>
           <Link
             to="/map"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-colors"
           >
             <ArrowLeft size={18} />
-            Kembali ke Peta
+            {text.backToMap}
           </Link>
         </div>
       </div>
@@ -98,18 +146,23 @@ const MuseumDetailPage = () => {
 
   const hasCoordinates = museum.latitude && museum.longitude;
   const googleMapsUrl = hasCoordinates ? `https://www.google.com/maps?q=${museum.latitude},${museum.longitude}` : null;
+  const localizedValue = (indonesianValue, englishValue) => {
+    if (language === 'en') {
+      return englishValue || indonesianValue || '-';
+    }
+
+    return indonesianValue || '-';
+  };
+  const localizedDescription =
+    language === 'en'
+      ? museum.deskripsi_en || museum.deskripsi || text.noDescription
+      : museum.deskripsi || text.noDescription;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link
-              to="/map"
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              <ArrowLeft size={20} />
-            </Link>
             <Link to="/" className="flex items-center gap-2">
               <div className="bg-emerald-100 dark:bg-emerald-900/50 p-2 rounded-xl text-emerald-600 dark:text-emerald-400">
                 <Landmark size={20} />
@@ -119,12 +172,54 @@ const MuseumDetailPage = () => {
               </span>
             </Link>
           </div>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              aria-label={text.themeAria}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            <div
+              className="flex items-center rounded-xl border border-slate-200 bg-slate-100 p-1 dark:border-slate-700 dark:bg-slate-800"
+              aria-label={text.languageAria}
+            >
+              <button
+                type="button"
+                onClick={() => changeLanguage('id')}
+                className={`h-8 px-3 rounded-lg text-xs font-bold transition-colors ${
+                  language === 'id'
+                    ? 'bg-emerald-500 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700'
+                }`}
+              >
+                ID
+              </button>
+              <button
+                type="button"
+                onClick={() => changeLanguage('en')}
+                className={`h-8 px-3 rounded-lg text-xs font-bold transition-colors ${
+                  language === 'en'
+                    ? 'bg-emerald-500 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-slate-700'
+                }`}
+              >
+                EN
+              </button>
+            </div>
+
+            <Link
+              to="/map"
+              className="flex h-10 items-center gap-1.5 rounded-xl bg-slate-100 px-3 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              aria-label={text.backToMap}
+            >
+              <ArrowLeft size={16} />
+              <span className="hidden sm:inline">{text.backToMap}</span>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -171,19 +266,25 @@ const MuseumDetailPage = () => {
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-6">{museum.nama_museum}</h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailInfoCard icon={<Globe size={20} />} title="Provinsi">
-                <p className={infoValueClass}>{museum.nama_provinsi || '-'}</p>
+              <DetailInfoCard icon={<Globe size={20} />} title={text.province}>
+                <p className={infoValueClass}>
+                  {localizedValue(museum.nama_provinsi, museum.nama_provinsi_en)}
+                </p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<Building2 size={20} />} title="Kabupaten / Kota">
-                <p className={infoValueClass}>{museum.nama_kabupaten || '-'}</p>
+              <DetailInfoCard icon={<Building2 size={20} />} title={text.regency}>
+                <p className={infoValueClass}>
+                  {localizedValue(museum.nama_kabupaten, museum.nama_kabupaten_en)}
+                </p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<Tag size={20} />} title="Kategori">
-                <p className={infoValueClass}>{museum.nama_kategori || 'Tidak dikategorikan'}</p>
+              <DetailInfoCard icon={<Tag size={20} />} title={text.category}>
+                <p className={infoValueClass}>
+                  {localizedValue(museum.nama_kategori || text.uncategorized, museum.nama_kategori_en)}
+                </p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<MapPin size={20} />} title="Koordinat">
+              <DetailInfoCard icon={<MapPin size={20} />} title={text.coordinates}>
                 <p className={infoValueClass}>
                   {museum.latitude}, {museum.longitude}
                 </p>
@@ -191,19 +292,19 @@ const MuseumDetailPage = () => {
             </div>
 
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailInfoCard icon={<CalendarDays size={20} />} title="Tahun Dibangun">
+              <DetailInfoCard icon={<CalendarDays size={20} />} title={text.yearBuilt}>
                 <p className={infoValueClass}>{museum.tahun_dibangun || '-'}</p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<Clock3 size={20} />} title="Jam Buka">
-                <p className={infoValueClass}>{museum.jam_buka || '-'}</p>
+              <DetailInfoCard icon={<Clock3 size={20} />} title={text.openingHours}>
+                <p className={infoValueClass}>{localizedValue(museum.jam_buka, museum.jam_buka_en)}</p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<Ticket size={20} />} title="Harga Tiket">
+              <DetailInfoCard icon={<Ticket size={20} />} title={text.ticketPrice}>
                 <p className={infoValueClass}>{museum.harga_tiket || '-'}</p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<ExternalLink size={20} />} title="Website">
+              <DetailInfoCard icon={<ExternalLink size={20} />} title={text.website}>
                 {museum.website ? (
                   <a
                     href={museum.website}
@@ -220,17 +321,24 @@ const MuseumDetailPage = () => {
             </div>
 
             <div className="mt-4 space-y-4">
-              <DetailInfoCard icon={<MapPin size={20} />} title="Alamat Lengkap">
-                <p className={infoValueClass}>{museum.alamat_lengkap || '-'}</p>
-              </DetailInfoCard>
-
-              <DetailInfoCard icon={<ScrollText size={20} />} title="Deskripsi / Pengertian Museum">
-                <p className={`${infoValueClass} whitespace-pre-line font-normal`}>
-                  {museum.deskripsi || 'Belum ada deskripsi museum.'}
+              <DetailInfoCard icon={<MapPin size={20} />} title={text.fullAddress}>
+                <p className={infoValueClass}>
+                  {localizedValue(museum.alamat_lengkap, museum.alamat_lengkap_en)}
                 </p>
               </DetailInfoCard>
 
-              <DetailInfoCard icon={<FileText size={20} />} title="Sumber Informasi">
+              <DetailInfoCard icon={<ScrollText size={20} />} title={text.description}>
+                <p className={`${infoValueClass} whitespace-pre-line font-normal`}>
+                  {localizedDescription}
+                </p>
+                {language === 'en' && !museum.deskripsi_en && museum.deskripsi && (
+                  <p className="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    {text.translationFallback}
+                  </p>
+                )}
+              </DetailInfoCard>
+
+              <DetailInfoCard icon={<FileText size={20} />} title={text.source}>
                 <p className={infoValueClass}>{museum.sumber_informasi || '-'}</p>
               </DetailInfoCard>
             </div>
@@ -241,7 +349,7 @@ const MuseumDetailPage = () => {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium transition-colors text-sm"
               >
                 <ArrowLeft size={16} />
-                Kembali ke Peta
+                {text.backToMap}
               </Link>
               {googleMapsUrl && (
                 <a
@@ -251,7 +359,7 @@ const MuseumDetailPage = () => {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors text-sm shadow-lg shadow-emerald-500/25"
                 >
                   <MapPin size={16} />
-                  Buka di Google Maps
+                  {text.openGoogleMaps}
                 </a>
               )}
             </div>

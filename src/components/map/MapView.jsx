@@ -5,10 +5,25 @@ import { Link } from 'react-router-dom';
 import { createCategoryIcon, userLocationIcon } from './CategoryMarker';
 import MapController from './MapController';
 import { MapPin, Tag, Building2, Globe, Navigation } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sidebarOpen = true }) => {
+  const { language } = useLanguage();
+  const text = {
+    id: {
+      distanceSuffix: 'km dari lokasi Anda',
+      viewDetail: 'Lihat Detail',
+      yourLocation: 'Lokasi Anda',
+    },
+    en: {
+      distanceSuffix: 'km from your location',
+      viewDetail: 'View Details',
+      yourLocation: 'Your Location',
+    },
+  }[language] || {};
+
   // Memoize markers to avoid re-creating icons on every render
   const markers = useMemo(() => {
     return museums
@@ -19,6 +34,14 @@ const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sideb
         icon: createCategoryIcon(museum.nama_kategori),
       }));
   }, [museums]);
+
+  const localizedName = (indonesianValue, englishValue) => {
+    if (language === 'en') {
+      return englishValue || indonesianValue;
+    }
+
+    return indonesianValue;
+  };
 
   return (
     <MapContainer
@@ -86,25 +109,25 @@ const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sideb
                   {museum.nama_provinsi && (
                     <div className="flex items-center gap-1.5 text-xs text-slate-600">
                       <Globe size={12} className="text-blue-500 shrink-0" />
-                      <span>{museum.nama_provinsi}</span>
+                      <span>{localizedName(museum.nama_provinsi, museum.nama_provinsi_en)}</span>
                     </div>
                   )}
                   {museum.nama_kabupaten && (
                     <div className="flex items-center gap-1.5 text-xs text-slate-600">
                       <Building2 size={12} className="text-purple-500 shrink-0" />
-                      <span>{museum.nama_kabupaten}</span>
+                      <span>{localizedName(museum.nama_kabupaten, museum.nama_kabupaten_en)}</span>
                     </div>
                   )}
                   {museum.nama_kategori && (
                     <div className="flex items-center gap-1.5 text-xs text-slate-600">
                       <Tag size={12} className="text-amber-500 shrink-0" />
-                      <span>{museum.nama_kategori}</span>
+                      <span>{localizedName(museum.nama_kategori, museum.nama_kategori_en)}</span>
                     </div>
                   )}
                   {museum.distance_km !== undefined && (
                     <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
                       <Navigation size={12} className="shrink-0" />
-                      <span>{museum.distance_km} km dari lokasi Anda</span>
+                      <span>{museum.distance_km} {text.distanceSuffix}</span>
                     </div>
                   )}
                 </div>
@@ -114,7 +137,7 @@ const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sideb
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium rounded-lg transition-colors w-full justify-center"
                 >
                   <MapPin size={12} />
-                  Lihat Detail
+                  {text.viewDetail}
                 </Link>
               </div>
             </Popup>
@@ -127,7 +150,7 @@ const MapView = ({ museums = [], userLocation = null, nearbyRadius = null, sideb
         <Marker position={[userLocation.lat, userLocation.lng]} icon={userLocationIcon}>
           <Popup>
             <div className="text-center p-1">
-              <p className="font-semibold text-sm text-slate-900">📍 Lokasi Anda</p>
+              <p className="font-semibold text-sm text-slate-900">📍 {text.yourLocation}</p>
               <p className="text-xs text-slate-500 mt-1">
                 {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
               </p>
