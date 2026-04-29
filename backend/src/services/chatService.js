@@ -6,29 +6,29 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
 const CHAT_CONTEXT_LIMIT = 15;
 
 const APP_CONTEXT = `
-Tentang aplikasi:
-- Nama aplikasi publik adalah MuseumNesia / MuseumApp.
-- Tujuan aplikasi: membantu user menemukan, memetakan, dan mempelajari museum di Indonesia.
-- Fitur publik utama: halaman Home, peta museum, pencarian nama museum, filter provinsi, filter kabupaten/kota, filter kategori, radius museum terdekat, halaman detail museum, dan chatbot pemandu.
-- Data museum yang dapat dijawab jika tersedia: nama, kategori, provinsi, kabupaten/kota, alamat, jam buka, harga tiket, tahun dibangun, deskripsi, website, dan sumber informasi.
-- Chatbot tidak memiliki akses ke lokasi GPS user secara langsung. Untuk pertanyaan "museum terdekat", arahkan user memakai fitur Museum Terdekat/radius di halaman Map.
+About the application / Tentang aplikasi:
+- The public product name is MuseumNesia / MuseumApp.
+- The app helps global and Indonesian users discover, map, and learn about museums in Indonesia.
+- Public features: Home page, museum map, museum name search, province filter, regency/city filter, category filter, nearby museum radius, museum detail page, and virtual guide chatbot.
+- Museum data you may answer from when available: name, category, province, regency/city, address, opening hours, ticket price, year built, description, website, and information source.
+- The chatbot does not directly access the user's GPS location. For "nearby museum" questions, guide users to the Nearby Museum/radius feature on the Map page.
 `.trim();
 
 const PAGE_CONTEXTS = [
   {
     match: (path) => path === '/',
     context:
-      'User sedang berada di halaman Home. Halaman ini cocok untuk penjelasan umum, rekomendasi awal, kategori museum, manfaat museum, dan ajakan membuka peta.',
+      'The user is on the Home page. This page is suitable for general explanations, first recommendations, museum categories, museum benefits, and inviting the user to open the map.',
   },
   {
     match: (path) => path.startsWith('/map'),
     context:
-      'User sedang berada di halaman Map. Di halaman ini user bisa mencari museum, memilih provinsi, kabupaten/kota, kategori, mengatur radius museum terdekat, dan membuka detail museum dari marker/popup.',
+      'The user is on the Map page. Here the user can search museums, choose province, regency/city, category, nearby radius, and open museum detail from a marker/popup.',
   },
   {
     match: (path) => path.startsWith('/museum/'),
     context:
-      'User sedang berada di halaman detail museum. Prioritaskan jawaban tentang museum yang sedang dibuka jika konteks museum tersedia.',
+      'The user is on a museum detail page. Prioritize answers about the currently opened museum if museum context is available.',
   },
 ];
 
@@ -62,6 +62,29 @@ const STOP_WORDS = new Set([
   'tolong',
   'untuk',
   'yang',
+  'about',
+  'available',
+  'can',
+  'category',
+  'categories',
+  'city',
+  'find',
+  'for',
+  'from',
+  'how',
+  'indonesia',
+  'museum',
+  'museums',
+  'near',
+  'nearby',
+  'please',
+  'show',
+  'the',
+  'there',
+  'what',
+  'where',
+  'which',
+  'with',
 ]);
 
 const trimText = (value, maxLength = 900) => {
@@ -92,7 +115,7 @@ const formatMuseumContext = (museum) => {
 
 const getPageContext = (pagePath = '/') => {
   const matchedPage = PAGE_CONTEXTS.find((page) => page.match(pagePath));
-  return matchedPage?.context || 'User sedang berada di halaman publik MuseumNesia.';
+    return matchedPage?.context || 'The user is on a public MuseumNesia page.';
 };
 
 const getAvailableFiltersContext = async () => {
@@ -127,8 +150,8 @@ const getAvailableFiltersContext = async () => {
     .join(', ');
 
   return [
-    categories ? `Kategori tersedia: ${categories}` : '',
-    provinces ? `Provinsi dengan data museum terbanyak: ${provinces}` : '',
+    categories ? `Available categories / Kategori tersedia: ${categories}` : '',
+    provinces ? `Provinces with the most museum data / Provinsi dengan data museum terbanyak: ${provinces}` : '',
   ]
     .filter(Boolean)
     .join('\n');
@@ -212,7 +235,7 @@ const getMuseumContext = async ({ museumId, message }) => {
   if (museumId) {
     const museum = await museumService.getMuseumById(museumId);
     return museum
-      ? `Konteks museum yang sedang dibuka user:\n${formatMuseumContext(museum)}`
+      ? `Current museum context / Konteks museum yang sedang dibuka user:\n${formatMuseumContext(museum)}`
       : '';
   }
 
@@ -223,7 +246,7 @@ const getMuseumContext = async ({ museumId, message }) => {
       .map((museum, index) => `${index + 1}. ${formatMuseumContext(museum)}`)
       .join('\n\n');
 
-    return `Data museum yang relevan dengan pertanyaan user:\n${summaries}`;
+    return `Museum data relevant to the user's question / Data museum yang relevan dengan pertanyaan user:\n${summaries}`;
   }
 
   const result = await museumService.getAllMuseums({
@@ -242,39 +265,59 @@ const getMuseumContext = async ({ museumId, message }) => {
     .map((museum, index) => `${index + 1}. ${formatMuseumContext(museum)}`)
     .join('\n\n');
 
-  return `Contoh data museum dari aplikasi:\n${summaries}`;
+  return `Sample museum data from the app / Contoh data museum dari aplikasi:\n${summaries}`;
 };
 
-const buildPrompt = ({ message, museumContext, appDataContext, pageContext }) => `
-Kamu adalah chatbot pemandu MuseumApp untuk membantu pengunjung belajar tentang museum.
+const getLanguageInstruction = (language) => {
+  if (language === 'en') {
+    return `
+Preferred interface language: English.
+Reply in English by default. If the user writes in Indonesian, you may answer in Indonesian or bilingual English-Indonesian when it helps. Keep Indonesian proper nouns such as museum names, city names, and category names accurate.
+`.trim();
+  }
+
+  return `
+Preferred interface language: Bahasa Indonesia.
+Jawab dalam Bahasa Indonesia secara default. Jika user bertanya dalam English, jawab dalam English atau bilingual English-Indonesian bila membantu. Pertahankan nama museum, kota, dan kategori sesuai data.
+`.trim();
+};
+
+const buildPrompt = ({ message, museumContext, appDataContext, pageContext, language }) => `
+You are MuseumNesia / MuseumApp virtual guide, helping global and Indonesian visitors learn about museums in Indonesia.
 
 ${APP_CONTEXT}
 
-Konteks halaman:
+Language behavior / Perilaku bahasa:
+${getLanguageInstruction(language)}
+- Match the user's language when it is clear from the question.
+- For mixed-language questions, answer naturally in the dominant language.
+- Never translate official museum names unless a well-known English equivalent is already obvious from the name.
+
+Page context / Konteks halaman:
 ${pageContext}
 
-Konteks data aplikasi:
-${appDataContext || 'Ringkasan kategori/provinsi belum tersedia.'}
+Application data context / Konteks data aplikasi:
+${appDataContext || 'Category/province summary is not available yet / Ringkasan kategori/provinsi belum tersedia.'}
 
-Jenis pertanyaan yang harus bisa kamu bantu:
-- Mencari daftar museum berdasarkan kota, kabupaten, provinsi, nama, atau kategori.
-- Menjelaskan kategori museum, contoh museum, dan hal yang bisa dipelajari user.
-- Menjawab detail museum seperti alamat, jam buka, harga tiket, tahun dibangun, deskripsi, website, dan sumber jika tersedia.
-- Memberi rekomendasi museum berdasarkan minat user, misalnya sejarah, seni budaya, sains teknologi, alam, militer, keluarga, atau wisata edukasi.
-- Membantu user memakai aplikasi, misalnya cara pakai peta, filter, pencarian, radius museum terdekat, dan cara membuka detail museum.
-- Menjawab pertanyaan edukatif umum tentang museum dengan tetap menjelaskan bahwa data spesifik harus mengikuti database aplikasi.
+Question types you should support / Jenis pertanyaan yang harus bisa dibantu:
+- Finding museum lists by city, regency, province, name, or category.
+- Explaining museum categories, example museums, and what visitors can learn.
+- Answering museum details such as address, opening hours, ticket price, year built, description, website, and source when available.
+- Recommending museums based on interest: history, art and culture, science and technology, nature, military, family trips, or educational travel.
+- Helping users use the app: map, filters, search, nearby radius, and opening museum detail pages.
+- Answering general educational questions about museums while keeping specific data grounded in the application database.
 
-Aturan jawaban:
-- Jawab dalam Bahasa Indonesia yang ramah, jelas, dan edukatif.
-- Utamakan informasi dari konteks museum dan konteks aplikasi yang diberikan.
-- Jika data spesifik tidak tersedia, katakan dengan jujur bahwa informasi tersebut belum tersedia di aplikasi.
-- Jangan mengarang jam buka, harga tiket, alamat, sejarah, atau fakta kuratorial.
-- Untuk pertanyaan daftar museum di lokasi/kategori tertentu, jawab dengan nama museum, lokasi, dan kategorinya jika tersedia dalam konteks.
-- Untuk pencarian kota/provinsi, gunakan field "Lokasi" sebagai acuan utama. Jika alamat terlihat tidak konsisten, jangan hapus museum dari hasil; cukup beri catatan singkat bahwa detail alamat perlu diverifikasi.
-- Jika user bertanya cara menggunakan aplikasi, jawab langkah praktis sesuai halaman dan fitur yang tersedia.
-- Jika user bertanya rekomendasi tetapi belum memberi lokasi/minat, berikan 2-3 opsi pertanyaan lanjutan yang natural.
-- Jika pertanyaan terlalu umum, berikan penjelasan singkat dan ajak user memilih museum atau topik yang ingin dipelajari.
-- Maksimal 3 paragraf pendek, kecuali user meminta detail.
+Answer rules / Aturan jawaban:
+- Be friendly, clear, educational, and useful for international visitors discovering Indonesian museums.
+- Prioritize the museum context and application context provided.
+- If specific data is unavailable, say honestly that the information is not yet available in the app.
+- Do not invent opening hours, ticket prices, addresses, history, or curatorial facts.
+- For museum-list questions in a location/category, answer with museum name, location, and category when available in context.
+- For city/province search, use the "Lokasi" field as the main reference. If an address looks inconsistent, do not remove the museum from results; add a short verification note.
+- If the user asks how to use the app, give practical steps based on the current page and available features.
+- If the user asks for recommendations without location/interest, offer 2-3 natural follow-up options.
+- If the question is broad, give a short answer and invite the user to choose a museum or topic.
+- Use up to 3 short paragraphs unless the user asks for details.
 
 ${museumContext || 'Konteks museum spesifik belum tersedia.'}
 
@@ -291,7 +334,7 @@ const extractGeminiText = (data) => {
     .trim();
 };
 
-const askGemini = async ({ message, museumId, pagePath = '/' }) => {
+const askGemini = async ({ message, museumId, pagePath = '/', language = 'id' }) => {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -311,7 +354,7 @@ const askGemini = async ({ message, museumId, pagePath = '/' }) => {
     getAvailableFiltersContext(),
   ]);
   const pageContext = getPageContext(pagePath);
-  const prompt = buildPrompt({ message, museumContext, appDataContext, pageContext });
+  const prompt = buildPrompt({ message, museumContext, appDataContext, pageContext, language });
 
   const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
     method: 'POST',

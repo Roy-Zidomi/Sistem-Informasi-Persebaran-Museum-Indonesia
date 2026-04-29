@@ -2,20 +2,46 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Bot, Loader2, MessageCircle, Send, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { askMuseumChatbot } from '../api/chatApi';
+import { useLanguage } from '../context/LanguageContext';
 
-const initialMessages = [
-  {
-    id: 'welcome',
-    role: 'assistant',
-    text: 'Halo! Saya pemandu virtual MuseumApp. Tanya apa saja tentang museum, koleksi, lokasi, jam buka, atau rekomendasi belajar.',
+const chatbotCopy = {
+  id: {
+    welcome:
+      'Halo! Saya pemandu virtual MuseumNesia. Tanya apa saja tentang museum Indonesia, lokasi, kategori, jam buka, tiket, atau rekomendasi belajar.',
+    title: 'Pemandu Museum',
+    subtitle: 'Belajar lebih dalam tentang museum',
+    quickPrompts: [
+      'Museum di Bandung ada apa saja?',
+      'Kategori museum apa saja?',
+      'Cara mencari museum terdekat?',
+    ],
+    loading: 'Sedang menjawab...',
+    error: 'Maaf, chatbot belum bisa menjawab sekarang. Coba lagi beberapa saat.',
+    inputLabel: 'Tulis pertanyaan',
+    placeholder: 'Tanya tentang museum...',
+    closeLabel: 'Tutup chatbot',
+    openLabel: 'Buka chatbot',
+    sendLabel: 'Kirim pesan',
   },
-];
-
-const quickPrompts = [
-  'Museum di Bandung ada apa saja?',
-  'Kategori museum apa saja?',
-  'Cara mencari museum terdekat?',
-];
+  en: {
+    welcome:
+      'Hi! I am MuseumNesia virtual guide. Ask me about Indonesian museums, locations, categories, opening hours, tickets, or learning recommendations.',
+    title: 'Museum Guide',
+    subtitle: 'Explore Indonesian museums',
+    quickPrompts: [
+      'What museums are in Bandung?',
+      'What museum categories are available?',
+      'How do I find nearby museums?',
+    ],
+    loading: 'Thinking...',
+    error: 'Sorry, the chatbot cannot answer right now. Please try again shortly.',
+    inputLabel: 'Type your question',
+    placeholder: 'Ask about museums...',
+    closeLabel: 'Close chatbot',
+    openLabel: 'Open chatbot',
+    sendLabel: 'Send message',
+  },
+};
 
 const getMuseumIdFromPath = (pathname) => {
   const match = pathname.match(/^\/museum\/(\d+)/);
@@ -24,8 +50,9 @@ const getMuseumIdFromPath = (pathname) => {
 
 function ChatbotWidget() {
   const location = useLocation();
+  const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -33,6 +60,27 @@ function ChatbotWidget() {
 
   const museumId = useMemo(() => getMuseumIdFromPath(location.pathname), [location.pathname]);
   const isAdminPage = location.pathname.startsWith('/admin');
+  const copy = chatbotCopy[language] || chatbotCopy.id;
+
+  useEffect(() => {
+    setMessages((currentMessages) => {
+      if (currentMessages.length > 0 && currentMessages[0].id !== 'welcome') {
+        return currentMessages;
+      }
+
+      const welcomeMessage = {
+        id: 'welcome',
+        role: 'assistant',
+        text: copy.welcome,
+      };
+
+      if (currentMessages.length === 0) {
+        return [welcomeMessage];
+      }
+
+      return [welcomeMessage, ...currentMessages.slice(1)];
+    });
+  }, [copy.welcome]);
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +115,7 @@ function ChatbotWidget() {
         message: trimmedMessage,
         museumId,
         pagePath: location.pathname,
+        language,
       });
 
       setMessages((currentMessages) => [
@@ -80,7 +129,7 @@ function ChatbotWidget() {
     } catch (requestError) {
       const message =
         requestError.response?.data?.message ||
-        'Maaf, chatbot belum bisa menjawab sekarang. Coba lagi beberapa saat.';
+        copy.error;
 
       setError(message);
       setMessages((currentMessages) => [
@@ -114,9 +163,9 @@ function ChatbotWidget() {
                 <Bot className="h-5 w-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
-                <h2 className="truncate text-sm font-semibold">Pemandu Museum</h2>
+                <h2 className="truncate text-sm font-semibold">{copy.title}</h2>
                 <p className="truncate text-xs text-emerald-50">
-                  Belajar lebih dalam tentang museum
+                  {copy.subtitle}
                 </p>
               </div>
             </div>
@@ -124,7 +173,7 @@ function ChatbotWidget() {
               type="button"
               onClick={() => setIsOpen(false)}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/70"
-              aria-label="Tutup chatbot"
+              aria-label={copy.closeLabel}
             >
               <X className="h-5 w-5" aria-hidden="true" />
             </button>
@@ -156,7 +205,7 @@ function ChatbotWidget() {
               <div className="flex justify-start">
                 <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  Sedang menjawab...
+                  {copy.loading}
                 </div>
               </div>
             )}
@@ -166,7 +215,7 @@ function ChatbotWidget() {
           <div className="border-t border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
             {messages.length === 1 && (
               <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
-                {quickPrompts.map((prompt) => (
+                {copy.quickPrompts.map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
@@ -188,7 +237,7 @@ function ChatbotWidget() {
 
             <form onSubmit={handleSubmit} className="flex items-end gap-2">
               <label htmlFor="museum-chatbot-input" className="sr-only">
-                Tulis pertanyaan
+                {copy.inputLabel}
               </label>
               <textarea
                 id="museum-chatbot-input"
@@ -200,7 +249,7 @@ function ChatbotWidget() {
                     handleSubmit(event);
                   }
                 }}
-                placeholder="Tanya tentang museum..."
+                placeholder={copy.placeholder}
                 rows={1}
                 maxLength={1000}
                 className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-emerald-900"
@@ -210,7 +259,7 @@ function ChatbotWidget() {
                 type="submit"
                 disabled={!input.trim() || isLoading}
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-300 disabled:cursor-not-allowed disabled:bg-slate-300 dark:disabled:bg-slate-700"
-                aria-label="Kirim pesan"
+                aria-label={copy.sendLabel}
               >
                 {isLoading ? (
                   <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
@@ -227,7 +276,7 @@ function ChatbotWidget() {
         type="button"
         onClick={() => setIsOpen((currentValue) => !currentValue)}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-900/25 transition hover:-translate-y-0.5 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 dark:focus:ring-emerald-900"
-        aria-label={isOpen ? 'Tutup chatbot' : 'Buka chatbot'}
+        aria-label={isOpen ? copy.closeLabel : copy.openLabel}
         aria-expanded={isOpen}
       >
         {isOpen ? (

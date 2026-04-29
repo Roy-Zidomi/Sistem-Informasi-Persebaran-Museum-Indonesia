@@ -8,6 +8,7 @@ const askChatbot = async (req, res, next) => {
     const message = String(req.body?.message || '').trim();
     const museumId = req.body?.museumId ? Number(req.body.museumId) : null;
     const pagePath = String(req.body?.pagePath || '/').slice(0, 120);
+    const language = req.body?.language === 'en' ? 'en' : 'id';
 
     if (!message) {
       return errorResponse(res, 400, 'Pesan tidak boleh kosong');
@@ -21,7 +22,7 @@ const askChatbot = async (req, res, next) => {
       return errorResponse(res, 400, 'museumId harus berupa angka');
     }
 
-    const answer = await chatService.askGemini({ message, museumId, pagePath });
+    const answer = await chatService.askGemini({ message, museumId, pagePath, language });
 
     return successResponse(res, 'Jawaban chatbot berhasil dibuat', { answer });
   } catch (error) {
