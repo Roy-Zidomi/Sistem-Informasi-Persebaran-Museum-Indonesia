@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict sfgZIADgKpgXdGf2I7n3dt2FWFIAlX4F2bL3JoTsvaZkeIMJFs14tkL6TA5dQ1s
+\restrict jeh2kH6TZ0jZ9xfQxFKR3Coa391vXikn3BAgowVzxHMj04BPoh05koPCfCdrtxw
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -131,7 +131,9 @@ CREATE TABLE public.museum (
     foto_url text,
     deskripsi_en text,
     jam_buka_en text,
-    alamat_lengkap_en text
+    alamat_lengkap_en text,
+    virtual_tour_url text,
+    livecam_url text
 );
 
 
@@ -374,5 +376,5 @@ ALTER TABLE ONLY public.museum
 -- PostgreSQL database dump complete
 --
 
-\unrestrict sfgZIADgKpgXdGf2I7n3dt2FWFIAlX4F2bL3JoTsvaZkeIMJFs14tkL6TA5dQ1s
+\unrestrict jeh2kH6TZ0jZ9xfQxFKR3Coa391vXikn3BAgowVzxHMj04BPoh05koPCfCdrtxw
 

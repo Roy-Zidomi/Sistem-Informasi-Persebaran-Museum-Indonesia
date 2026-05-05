@@ -37,6 +37,7 @@ const defaultIcon = L.icon({
 });
 
 const infoValueClass = 'text-base font-semibold text-slate-800 dark:text-slate-200 mt-0.5';
+const globalLivecamUrl = (import.meta.env.VITE_LIVE_CAM_URL || '').trim();
 
 const DetailInfoCard = ({ icon, title, children }) => (
   <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
@@ -57,6 +58,7 @@ const MuseumDetailPage = () => {
   const [museum, setMuseum] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [failedLivecamUrl, setFailedLivecamUrl] = useState('');
   const text = {
     id: {
       loading: 'Memuat detail museum...',
@@ -77,6 +79,9 @@ const MuseumDetailPage = () => {
       description: 'Deskripsi / Pengertian Museum',
       noDescription: 'Belum ada deskripsi museum.',
       source: 'Sumber Informasi',
+      livecam: 'Live Cam Museum',
+      livecamNotConfigured: 'Live cam belum dikonfigurasi.',
+      livecamUnavailable: 'Live cam belum dapat dimuat.',
       openGoogleMaps: 'Buka di Google Maps',
       translationFallback: '',
     },
@@ -99,6 +104,9 @@ const MuseumDetailPage = () => {
       description: 'Museum Description',
       noDescription: 'No museum description is available yet.',
       source: 'Information Source',
+      livecam: 'Museum Live Cam',
+      livecamNotConfigured: 'Live cam is not configured yet.',
+      livecamUnavailable: 'Live cam could not be loaded.',
       openGoogleMaps: 'Open in Google Maps',
       translationFallback: 'English translation is not available yet, so the original Indonesian text is shown.',
     },
@@ -160,6 +168,10 @@ const MuseumDetailPage = () => {
     language === 'en'
       ? museum.deskripsi_en || museum.deskripsi || text.noDescription
       : museum.deskripsi || text.noDescription;
+  const livecamUrl = [museum.livecam_url, globalLivecamUrl]
+    .find((url) => typeof url === 'string' && url.trim())
+    ?.trim();
+  const livecamError = Boolean(livecamUrl && failedLivecamUrl === livecamUrl);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors">
@@ -344,8 +356,7 @@ const MuseumDetailPage = () => {
               </DetailInfoCard>
             </div>
 
-            {(museum.virtual_tour_url || museum.livecam_url) && (
-              <div className="mt-8 space-y-6">
+            <div className="mt-8 space-y-6">
                 {museum.virtual_tour_url && (
                   <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
@@ -367,25 +378,29 @@ const MuseumDetailPage = () => {
                   </div>
                 )}
 
-                {museum.livecam_url && (
-                  <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-                    <div className="bg-slate-50 dark:bg-slate-800/50 p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
-                      <Video className="text-emerald-500" size={20} />
-                      <h3 className="font-bold text-slate-800 dark:text-slate-200">Livecam</h3>
-                    </div>
-                    <div className="h-96 w-full relative">
-                      <iframe
-                        src={museum.livecam_url}
-                        title="Livecam"
-                        className="absolute inset-0 w-full h-full border-0"
-                        allowFullScreen
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      ></iframe>
-                    </div>
+                <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="bg-slate-50 dark:bg-slate-800/50 p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                    <Video className="text-emerald-500" size={20} />
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200">{text.livecam}</h3>
                   </div>
-                )}
-              </div>
-            )}
+                  <div className="aspect-video w-full bg-slate-950 relative overflow-hidden">
+                    {livecamUrl && !livecamError ? (
+                      <img
+                        src={livecamUrl}
+                        alt={text.livecam}
+                        className="absolute inset-0 h-full w-full object-contain"
+                        onError={() => setFailedLivecamUrl(livecamUrl)}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center px-4 text-center">
+                        <p className="text-sm font-medium text-slate-300">
+                          {livecamUrl ? text.livecamUnavailable : text.livecamNotConfigured}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+            </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link

@@ -87,9 +87,11 @@ CORS_ORIGIN=*
 
 ```env
 VITE_API_URL=http://localhost:5000/api
+VITE_LIVE_CAM_URL=http://192.168.1.23:8080/video
 ```
 
-If not provided, frontend already defaults to `http://localhost:5000/api`.
+If `VITE_API_URL` is not provided, frontend already defaults to `http://localhost:5000/api`.
+`VITE_LIVE_CAM_URL` is optional and is used as one global live cam stream on museum detail pages.
 
 ## Run Locally
 
