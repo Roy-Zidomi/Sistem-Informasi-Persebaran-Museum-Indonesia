@@ -102,6 +102,8 @@ const createMuseum = async (req, res, next) => {
       website,
       sumber_informasi,
       foto_url,
+      virtual_tour_url,
+      livecam_url,
     } = req.body;
 
     if (!nama_museum || !latitude || !longitude || !provinsi_id || !kabupaten_id) {
@@ -127,6 +129,8 @@ const createMuseum = async (req, res, next) => {
       website,
       sumber_informasi,
       foto_url,
+      virtual_tour_url,
+      livecam_url,
     });
 
     return successResponse(res, 'Museum berhasil ditambahkan', museum, 201);
@@ -159,6 +163,8 @@ const updateMuseum = async (req, res, next) => {
       website,
       sumber_informasi,
       foto_url,
+      virtual_tour_url,
+      livecam_url,
     } = req.body;
 
     if (!nama_museum || !latitude || !longitude || !provinsi_id || !kabupaten_id) {
@@ -183,6 +189,8 @@ const updateMuseum = async (req, res, next) => {
       website,
       sumber_informasi,
       foto_url,
+      virtual_tour_url,
+      livecam_url,
     });
 
     if (!museum) {
